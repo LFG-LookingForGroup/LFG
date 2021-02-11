@@ -6,6 +6,8 @@ class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   address = models.OneToOneField(Address, on_delete=models.CASCADE)
   projects = models.ManyToManyField(Project, through='Member')
+  chat_channels = models.ManyToManyField(ChatChannel)
+  chats = models.ManyToManyField(ChatChannel, through='Chat')
   friends = models.ManyToManyField("self", through='Friend')
   bio = models.CharField(max_length=1000)
   telephone_number = models.DecimalField(max_digits=11)
@@ -26,6 +28,7 @@ class Friend(models.Model):
 
 # Project Membership & Role Schema
 class Project(models.model):
+  channels = models.ManyToManyField(ChatChannel, through='ProjectChannel')
   name = models.CharField(max_length=45)
   description = models.CharField(max_length=10000)
   startDate = models.DateField()
@@ -51,3 +54,16 @@ class Skill(models.model):
   description = models.CharField(max_length=250)
 
 # Chat Schema
+class Chat(models.model):
+  sender = models.ForeignKey(Profile, related_name = 'sender_user')
+  channel = models.ForeignKey(ChatChannel)
+  message = models.CharField(max_length = 2000)
+  time_sent = models.DateTimeField(auto_now = True)
+  
+class ChatChannel(models.model):
+  channel_type = models.CharField(max_length=1, choices=[('D', 'Direct'), ('P', 'Project')])
+  
+class ProjectChannel(models.model):
+  project = models.ForeignKey(Project)
+  channel = models.ForeignKey(ChatChannel)
+  name = models.CharField(max_length = 45)
