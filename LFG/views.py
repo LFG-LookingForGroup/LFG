@@ -3,4 +3,4 @@ from django.http import HttpResponse
 from pathlib import Path
 
 def index(request):
-  return HttpResponse()
+  return HttpResponse(Path("public_html/index.html").read_text())
