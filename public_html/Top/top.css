@@ -1,0 +1,19 @@
+.navigation{
+	width: 100%;
+	text-align: center;
+	clear:both; display:inline-block;
+}
+.logo{display:inline-block;float:left}
+#nav-list{
+    margin-top:55px;
+   list-style-type: none;
+    float:left; display:inline-block;
+}
+
+
+#nav-list li{
+   display: inline;
+   font-size: 18px;
+   margin: 20px;
+    
+}
