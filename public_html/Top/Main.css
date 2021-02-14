@@ -1,0 +1,33 @@
+.navigation{
+	width: 100%;
+	text-align: right;
+	clear:both; display:inline-block;
+}
+.logo{display:inline-block;float:left}
+#nav-list{
+    margin-top:55px;
+   list-style-type: none;
+    display:inline-block;
+	text-align:center;
+}
+
+
+#nav-list li{
+   display: inline;
+   font-size: 18px;
+   margin: 20px;
+    
+}
+
+.button {
+    background-color: #DCDCDC;
+    border: none;
+    color: rgb(14, 13, 13);
+    padding: 20px 34px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
