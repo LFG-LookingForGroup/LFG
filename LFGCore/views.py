@@ -51,6 +51,18 @@ def login_user(request):
     'success' : True
   })
 
-def index(request):
-  return render(request, "index.html")
+@csrf_exempt
+def logout_user(request):
+  return HttpResponse()
 
+def account(request):
+  return render(request, "Account/account.html")
+
+def profile(request):
+  return render(request, "Profile/profile.html")
+
+def search(request):
+  return render(request, 'Search/search.html')
+
+def index(request):
+  return render(request, "Top/top.html")
