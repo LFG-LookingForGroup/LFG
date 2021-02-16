@@ -30,31 +30,13 @@ def signup(request):
       raw_password = form.cleaned_data.get('password')
       user = authenticate(username = username, password = raw_password)
       login(request, user)
-      return redirect('home')
+      return redirect('profile')
   else:
     form = UserCreationForm()
-  return render(request, 'LFGCore/main.html', {'form' : form})
+  return render(request, 'LFGCore/signup.html', {'form' : form})
 
 def search(request):
   return render(request, 'LFGCore/search.html')
 
-<<<<<<< Updated upstream
 def index(request):
   return render(request, "LFGCore/top.html")
-=======
-@csrf_exempt
-def logout_user(request):
-  return HttpResponse()
-
-def account(request):
-  return render(request, "Account/account.html")
-
-def profile(request):
-  return render(request, "Profile/profile.html")
-
-def search(request):
-  return render(request, 'Search/search.html')
-
-def index(request):
-  return render(request, "Top/top.html")
->>>>>>> Stashed changes
