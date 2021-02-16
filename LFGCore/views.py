@@ -41,12 +41,28 @@ def search(request):
   if request.method != 'GET':
     return HttpResponseNotFound("<h1>Only GETS allowed</h1>")
 
-  query = request['GET'].get('query', '')
+  query = request.GET.get('query', None)
 
+  if query != None and query.strip() != "":
+    search_result = Project.objects.filter(name__icontains=query)
 
+    rows = [f"""
+      <tr>
+        <th>{p.name}</th>
+        <th>{p.description}</th>
+      </tr>""" for p in search_result]
 
-  rendered_results = ""
-  return render(request, 'LFGCore/search.html', {'search_results' : rendered_results})
+    rendered_results = f"""
+      <table>
+        <tr>
+          <td>Name</td>
+          <td>Description</td>
+        </tr>
+        {"".join(rows)}
+      </table>"""
+
+    return render(request, 'LFGCore/search.html', {'search_results' : rendered_results, 'original_query' : query})
+  return render(request, 'LFGCore/search.html')
 
 def index(request):
   return render(request, "LFGCore/top.html")

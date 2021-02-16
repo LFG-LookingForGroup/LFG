@@ -19,9 +19,12 @@
 
   </div>
   <h1>Search</h1>
-  <input type="text" id="SearchBar" placeholder="Position Title">
+  <form action="/search">
+    <input type="text" id="SearchBar" name="query" placeholder="Position Title" value="{{ original_query }}"> <br>
+    <input type="submit" value="Search">
+  </form>
 
-  <div id="search_results">{{ search_results }}</div>
+  <div id="search_results">{{ search_results|safe }}</div>
 </body>
 </body>
 
