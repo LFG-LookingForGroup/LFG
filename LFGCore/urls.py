@@ -19,8 +19,15 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
+<<<<<<< Updated upstream
     path('login', auth_views.LoginView.as_view(template_name='LFGCore/login.html')),
     path('accounts/profile', views.profile),
     path(r'^accounts/create$', views.signup, name='create_account'),
     path(r'^$', views.index),
+=======
+    path('login', auth_views.LoginView.as_view(template_name='Login/login.html')),
+    path('api/login', views.login_user),
+    path('accounts/profile', views.profile),
+    path('', views.index)
+>>>>>>> Stashed changes
 ]
