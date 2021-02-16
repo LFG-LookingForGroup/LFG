@@ -19,7 +19,7 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
-    path('login', auth_views.LoginView.as_view(template_name='Login/login.html')),
+    path('login', auth_views.LoginView.as_view(template_name='LFGCore/login.html')),
     path('api/login', views.login_user),
     path('accounts/profile', views.profile),
     path('', views.index)

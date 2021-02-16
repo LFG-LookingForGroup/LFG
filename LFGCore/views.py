@@ -56,13 +56,13 @@ def logout_user(request):
   return HttpResponse()
 
 def account(request):
-  return render(request, "Account/account.html")
+  return render(request, "LFGCore/account.html")
 
 def profile(request):
-  return render(request, "Profile/profile.html")
+  return render(request, "LFGCore/profile.html")
 
 def search(request):
-  return render(request, 'Search/search.html')
+  return render(request, 'LFGCore/search.html')
 
 def index(request):
-  return render(request, "Top/top.html")
+  return render(request, "LFGCore/top.html")

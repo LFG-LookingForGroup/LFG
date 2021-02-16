@@ -56,7 +56,7 @@ ROOT_URLCONF = 'LFG.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['public_html'],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -119,7 +119,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = "/public_html/"
-STATICFILES_DIRS = (str(BASE_DIR.joinpath('public_html')),)
+STATIC_URL = "/static/"
+STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
 
 LOGIN_URL = 'login'
