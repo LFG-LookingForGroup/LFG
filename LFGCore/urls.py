@@ -15,14 +15,14 @@ Including another URLconf
 """
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from django.conf.urls import url
 
 from . import views
 
 urlpatterns = [
     path('login', auth_views.LoginView.as_view(template_name='LFGCore/login.html')),
-    path(r'^accounts/profile$', views.profile, name = 'profile'),
-    #path(r'^signup/$', views.signup, name='signup'),
-    url(r'^signup/$', views.signup, name='signup'),
-    path(r'^$', views.index),
+    path('accounts/profile', views.profile),
+    path('accounts/create', views.signup, name='create_account'),
+    path('search', views.search),
+    path('project/<int:project_id>', views.project),
+    path('', views.index, name='home'),
 ]

@@ -9,13 +9,13 @@ class Profile(models.Model):
   chat_channels = models.ManyToManyField('ChatChannel', related_name="channels")
   chats = models.ManyToManyField('ChatChannel', related_name="chats", through='Chat')
   friends = models.ManyToManyField("self", through='Friend')
-  bio = models.CharField(max_length=1000)
-  telephone_number = models.DecimalField(max_digits=11, decimal_places=0)
+  bio = models.CharField(max_length=1000, null=True)
+  telephone_number = models.DecimalField(max_digits=11, decimal_places=0, null=True)
 
 class Address(models.Model):
   address1 = models.CharField(max_length=45)
-  address2 = models.CharField(max_length=45)
-  apartment_number = models.CharField(max_length=45)
+  address2 = models.CharField(max_length=45, null=True)
+  apartment_number = models.CharField(max_length=45, null=True)
   city = models.CharField(max_length=45)
   state = models.CharField(max_length=45)
   zipcode = models.CharField(max_length=45)
@@ -31,16 +31,16 @@ class Project(models.Model):
   channels = models.ManyToManyField('ChatChannel', through='ProjectChannel')
   name = models.CharField(max_length=45)
   description = models.CharField(max_length=10000)
-  startDate = models.DateField()
-  endDate = models.DateField()
+  startDate = models.DateField(null=True)
+  endDate = models.DateField(null=True)
 
 class Member(models.Model):
   user = models.ForeignKey(Profile, on_delete=models.CASCADE)
   project = models.ForeignKey(Project, on_delete=models.CASCADE)
-  role = models.ForeignKey('Role', on_delete=models.CASCADE)
+  roles = models.ManyToManyField('Role')
   is_owner = models.BooleanField()
   startDate = models.DateField()
-  endDate = models.DateField()
+  endDate = models.DateField(null=True)
 
 class Role(models.Model):
   project = models.ForeignKey(Project, on_delete=models.CASCADE)

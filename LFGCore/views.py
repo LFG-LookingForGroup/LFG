@@ -7,11 +7,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from pathlib import Path
 from LFGCore.models import *
+from LFGCore.forms import SignUpForm
 import datetime
 
-@csrf_exempt
-def logout_user(request):
-  return HttpResponse()
 
 @login_required
 def account(request):
@@ -21,22 +19,34 @@ def account(request):
 def profile(request):
     return render(request, 'LFGCore/profile.html', {"user":request.user})
 
+@login_required
+def project(request, projectid):
+  pass
+
 def signup(request):
   if request.method == 'POST':
     form = UserCreationForm(request.POST)
     if form.is_valid():
       form.save()
       username = form.cleaned_data.get('username')
-      raw_password = form.cleaned_data.get('password')
+      raw_password = form.cleaned_data.get('password1')
       user = authenticate(username = username, password = raw_password)
       login(request, user)
-      return redirect('profile')
+      return redirect('home')
   else:
-    form = UserCreationForm()
+    form = SignUpForm()
   return render(request, 'LFGCore/signup.html', {'form' : form})
 
 def search(request):
-  return render(request, 'LFGCore/search.html')
+  if request.method != 'GET':
+    return HttpResponseNotFound("<h1>Only GETS allowed</h1>")
+
+  query = request['GET'].get('query', '')
+
+
+
+  rendered_results = ""
+  return render(request, 'LFGCore/search.html', {'search_results' : rendered_results})
 
 def index(request):
   return render(request, "LFGCore/top.html")
