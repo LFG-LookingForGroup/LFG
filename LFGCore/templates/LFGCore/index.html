@@ -8,14 +8,8 @@
 </head>
 
 <body>
-
-
-  <div class="topnav">
-    <div class="logo"> <img src="/static/top/logo.svg" alt="Logo" width="150" height="150" /></div>
-    <a href="/accounts/create">Create Account</a>
-    <a href="/accounts/login">Log In</a>
-  </div>
-  </div>
+  {extends "notloggedtop.html"}
+  {% block content %}
   <h1 style="text-align: center;">Test</h1>
   <style>
     body {
@@ -25,7 +19,7 @@
       background-size: 100% 100%;
     }
   </style>
-
+  {% endblock content %}
 </body>
 
 </html>
