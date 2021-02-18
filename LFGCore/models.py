@@ -46,7 +46,7 @@ class Project(models.Model):
   endDate = models.DateField(null=True)
 
 class Member(models.Model):
-  user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+  profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
   project = models.ForeignKey(Project, on_delete=models.CASCADE)
   roles = models.ManyToManyField('Role')
   is_owner = models.BooleanField()

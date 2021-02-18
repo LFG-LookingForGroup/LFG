@@ -20,9 +20,10 @@ from . import views
 
 urlpatterns = [
     path('login', auth_views.LoginView.as_view(template_name='LFGCore/login.html')),
-    path('accounts/profile', views.profile),
+    path('accounts/profile', views.profile, name='profile_view'),
     path('accounts/create', views.signup, name='create_account'),
+    path('accounts/profile/update', views.update_profile, name='profile_update'),
     path('search', views.search),
-    path('project/<int:project_id>', views.project),
+    path('project/<int:id>', views.project),
     path('', views.index, name='home'),
 ]

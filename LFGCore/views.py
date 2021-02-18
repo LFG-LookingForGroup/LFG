@@ -22,8 +22,17 @@ def profile(request):
     return render(request, 'LFGCore/profile.html', {"user":request.user})
 
 @login_required
-def project(request, projectid):
-  pass
+def project(request, id=None):
+  if id == None:
+    return HttpResponseNotFound()
+  else:
+    project = Project.objects.get(id=id)
+    if project == None:
+      return HttpResponseNotFound(f"<p>Project id {id} does not exist</p>")
+
+  members = Profile.objects.filter(projects=project)
+
+  return render(request, 'LFGCore/project.html', {"project" : project, "members" : members })
 
 def signup(request):
   if request.method == 'POST':
@@ -49,13 +58,13 @@ def update_profile(request, user_id):
       user_form.save()
       profile_form.save()
       messages.success(request, 'Profile was updated successfully.')
-      return redirect('settings:profile')
+      return redirect('profile_view')
     else:
       messages.error(request, 'Profile was not updated.')
   else:
     user_form = UserForm(instance=request.user)
     profile_form = ProfileForm(instance=request)
-  return render(request, 'profile/profile1.html', {
+  return render(request, 'LFGCore/profileUpdate.html', {
     'user_form' : user_form,
     'profile_form' : profile_form
   })
@@ -88,4 +97,4 @@ def search(request):
   return render(request, 'LFGCore/search.html')
 
 def index(request):
-  return render(request, "LFGCore/top.html")
+  return render(request, "LFGCore/index.html")

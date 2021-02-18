@@ -21,16 +21,24 @@
       </form>
     </div>
   </div>
-  <h1 style="text-align: center;">Project Page</h1>
+  <h1 style="text-align: center;">{{ project.name }}</h1>
 
 
   <h1>Description</h1>
+  {{ project.description }}
 
   <h2>Members</h2>
   <ul>
-
-
-
+    {% for member in members %}
+      <li>{{ member.profile.user.username }}</li>
+      <li>Roles: 
+        <ul>
+          {% for role in member.roles %}
+            <li>{{ role.title }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+    {% endfor %}
   </ul>
   <h3>New Member Creation</h3>>
   <input type = "text" placeholder = "New Member's Username">
