@@ -30,8 +30,6 @@ def project(request, id=None):
     if project == None:
       return HttpResponseNotFound(f"<p>Project id {id} does not exist</p>")
 
-  members = Profile.objects.filter(projects=project)
-
   return render(request, 'LFGCore/project.html', {"project" : project, "members" : members })
 
 def signup(request):

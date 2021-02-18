@@ -1,25 +1,17 @@
-<!DOCTYPE html>
-<html>
+{% extends "LFGCore/notloggedtop.html" %}
 
-<head>
-  <title>Welcome to LFG!</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/static/top/main.css">
-</head>
+{% block head %}
+<title>Welcome to LFG!</title>
+{% endblock head %}
 
-<body>
-  {extends "notloggedtop.html"}
-  {% block content %}
-  <h1 style="text-align: center;">Test</h1>
-  <style>
-    body {
-      background-image: url('../top/logo.svg');
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-size: 100% 100%;
-    }
-  </style>
-  {% endblock content %}
-</body>
-
-</html>
+{% block content %}
+<h1 style="text-align: center;">Test</h1>
+<style>
+  body {
+    background-image: url('/static/top/logo.svg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+  }
+</style>
+{% endblock content %}

@@ -3,25 +3,22 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/static/top/top.css">
+  <link rel="stylesheet" href="/static/top/main.css">
+  {% block header %}{% endblock header %}
 </head>
 
 <body>
-
-  {% block content %}
-  <div class="topnav">
+  <div class="navigation">
     <div class="logo"> <img src="/static/top/logo.svg" alt="Logo" width="150" height="150" /></div>
-    <a class="active" href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-    <div class="search-container">
-      <form action="/action_page.php">
-        <input type="text" placeholder="Search.." name="search">
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+
+    <ul id="nav-list">
+      <li><a href="/login/" class="button">Login</a></li>
+      <li><a href="/accounts/create" class="button">Create Account</a></li>
+
+    </ul>
+
   </div>
-  {% endblock content %}
+  {% block content %}{% endblock content %}
 </body>
 
 
