@@ -1,6 +1,14 @@
+{% extends "LFGCore/top.html" %}
+
+{% block header %}
+<title>Update Profile</title>
+{% endblock header %}
+
+{% block content %}
 <form method="post">
     {% csrf_token %}
     {{ user_form.as_p }}
     {{ profile_form.as_p }}
     <button type="submit">Save Changes</button>
 </form>
+{% endblock content %}

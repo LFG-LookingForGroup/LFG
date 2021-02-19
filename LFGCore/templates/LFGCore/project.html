@@ -1,53 +1,36 @@
-<!DOCTYPE html>
+{% extends "LFGCore/top.html" %}
 
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/static/top/top.css">
-  <title>Project Page</title>
-</head>
+{% block header %}
+<title>Project</title>
+{% endblock header %}
 
-<body>
+{% block content %}
 
-
-  <div class="topnav">
-    <div class="logo"> <img src="/static/top/logo.svg" alt="Logo" width="150" height="150" /></div>
-    <a class="active" href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-    <div class="search-container">
-      <form action="/action_page.php">
-        <input type="text" placeholder="Search.." name="search">
-        <button type="submit">Submit</button>
-      </form>
-    </div>
-  </div>
-  <h1 style="text-align: center;">{{ project.name }}</h1>
+<h1 style="text-align: center;">{{ project.name }}</h1>
 
 
-  <h1>Description</h1>
-  {{ project.description }}
+<h1>Description</h1>
+{{ project.description }}
 
-  <h2>Members</h2>
-  <ul>
-    {% for member in members %}
-      <li>{{ member.profile.user.username }}</li>
-      <li>Roles: 
-        <ul>
-          {% for role in member.roles %}
-            <li>{{ role.title }}</li>
-          {% endfor %}
-        </ul>
-      </li>
-    {% endfor %}
-  </ul>
-  <h3>New Member Creation</h3>>
-  <input type = "text" placeholder = "New Member's Username">
-  <br> 
-  <input type = "text" placeholder = "Role Name">
-  <br>
-  <button>Add New Member</button>>
+<h2>Members</h2>
+<ul>
+  {% for member in members %}
+  <li>{{ member.profile.user.username }}</li>
+  <li>Roles:
+    <ul>
+      {% for role in member.roles %}
+      <li>{{ role.title }}</li>
+      {% endfor %}
+    </ul>
+  </li>
+  {% endfor %}
+</ul>
+<h3>New Member Creation</h3>>
+<input type="text" placeholder="New Member's Username">
+<br>
+<input type="text" placeholder="Role Name">
+<br>
+<button>Add New Member</button>>
 
 
-</body>
-
-</html>
+{% endblock content %}

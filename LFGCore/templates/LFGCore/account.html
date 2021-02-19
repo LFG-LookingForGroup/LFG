@@ -1,45 +1,28 @@
-<!DOCTYPE html>
-<html>
+{% extends "LFGCore/top.html" %}
 
-<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="/static/top/top.css">
-</head>
+{% block header %}
+<title>Account Settings</title>
+{% endblock header %}
 
-<body>
-
-	<div class="topnav">
-		<div class="logo"> <img src="/static/top/logo.svg" alt="Logo" width="150" height="150" /></div>
-		<a class="active" href="#home">Home</a>
-		<a href="#about">About</a>
-		<a href="#contact">Contact</a>
-		<div class="search-container">
-			<form action="/action_page.php">
-				<input type="text" placeholder="Search.." name="search">
-				<button type="submit">Submit</button>
-			</form>
-		</div>
-	</div>
-	<title>Account Settings</title>
-	<div style="padding-left:16px">
-		<h1 style="text-align: center;">Account Settings</h1>
-		<hr />
+{% block content %}
+<div style="padding-left:16px">
+	<h1 style="text-align: center;">Account Settings</h1>
+	<hr />
+	<p>&nbsp;</p>
+	<form style="padding-left: 120px;">
+		<p>First Name:&nbsp;<input name="name" type="text" value="First" />&nbsp;Last Name:&nbsp;<input name="Last"
+				type="text" value="Last" /></p>
+	</form>
+	<form style="padding-left: 120px;">
 		<p>&nbsp;</p>
-		<form style="padding-left: 120px;">
-			<p>First Name:&nbsp;<input name="name" type="text" value="First" />&nbsp;Last Name:&nbsp;<input name="Last"
-					type="text" value="Last" /></p>
-		</form>
-		<form style="padding-left: 120px;">
-			<p>&nbsp;</p>
-		</form>
-		<form style="padding-left: 120px;">
-			<p>E-Mail:&nbsp;<input name="name" type="text" value="user@test.com" /></p>
-			<p>&nbsp;</p>
-		</form>
-		<form style="padding-left: 120px;">
-			<p>Date of Birth:&nbsp;<input name="name" type="text" value="01/01/1980" /></p>
-		</form>
-	</div>
-</body>
+	</form>
+	<form style="padding-left: 120px;">
+		<p>E-Mail:&nbsp;<input name="name" type="text" value="user@test.com" /></p>
+		<p>&nbsp;</p>
+	</form>
+	<form style="padding-left: 120px;">
+		<p>Date of Birth:&nbsp;<input name="name" type="text" value="01/01/1980" /></p>
+	</form>
+</div>
 
-</html>
+{% endblock content %}

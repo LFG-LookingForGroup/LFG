@@ -1,51 +1,45 @@
-<!DOCTYPE html>
-<html>
+{% extends "LFGCore/top.html" %}
 
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="../top/top.css">
-</head>
+{% block header %}
+<title>Profile</title>
+{% endblock header %}
 
-<body>
+{% block content %}
 
-
-  <div class="topnav">
-    <div class="logo"> <img src="/static/top/logo.svg" alt="Logo" width="150" height="150" /></div>
-    <a class="active" href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-    <div class="search-container">
-      <form action="/action_page.php">
-        <input type="text" placeholder="Search.." name="search">
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+<div class="topnav">
+  <div class="logo"> <img src="/static/top/logo.svg" alt="Logo" width="150" height="150" /></div>
+  <a class="active" href="#home">Home</a>
+  <a href="#about">About</a>
+  <a href="#contact">Contact</a>
+  <div class="search-container">
+    <form action="/action_page.php">
+      <input type="text" placeholder="Search.." name="search">
+      <button type="submit">Submit</button>
+    </form>
   </div>
-  <title>User Profile</title>
-  <h1>Profile</h1>
+</div>
+<title>User Profile</title>
+<h1>Profile</h1>
 
-  <div class ="card">
-    <img src = "image_defaultProfile.jpg" alt = "Username" style = "width:100%"> 
-    <h2>{{ user.username }}</h2>>
+<div class="card">
+  <img src="image_defaultProfile.jpg" alt="Username" style="width:100%">
+  <h2>{{ user.username }}</h2>>
 
-    <h3>Previous Project Experience</h3>
-    <ul>
+  <h3>Previous Project Experience</h3>
+  <ul>
     <p>Project Experience 1</p>
     <p>Project Experience 2</p>
     <p>Project Experience 3</p>
-    </ul>>
-    
-	<h3>Skills</h3>
-	<ul>
-	<li>skill 1</li>
-	<li>skill 2</li>
-	<li>skill 3</li>
-	<li>skill 4</li>
-	</ul>
+  </ul>>
+
+  <h3>Skills</h3>
+  <ul>
+    <li>skill 1</li>
+    <li>skill 2</li>
+    <li>skill 3</li>
+    <li>skill 4</li>
+  </ul>
 
 
-  </div>>
-
-</body>
-
-</html>
+</div>
+{% endblock content %}

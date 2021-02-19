@@ -1,25 +1,14 @@
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/static/top/top.css">
-  <title>Login</title>
-</head>
+-
+{% extends "LFGCore/top.html" %}
+
+{% block header %}
+<title>Login</title>
+{% endblock header %}
 
 <body>
 
 
-  <div class="topnav">
-    <div class="logo"> <img src="/static/top/logo.svg" alt="Logo" width="150" height="150" /></div>
-    <a class="active" href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-    <div class="search-container">
-      <form action="/action_page.php">
-        <input type="text" placeholder="Search.." name="search">
-        <button type="submit">Submit</button>
-      </form>
-    </div>
-  </div>
-  {% block title %}Login{% endblock %}
+
 
   {% block content %}
   <h2>Login</h2>
