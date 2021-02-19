@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from LFGCore.models import Profile
+from LFGCore.models import *
 
 class SignUpForm(UserCreationForm):
     birth_date = forms.DateField(help_text='Required. Format: YYYY-MM-DD')
@@ -23,3 +23,7 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ('bio',)
 
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ('name', 'description', 'startDate', 'endDate', )
