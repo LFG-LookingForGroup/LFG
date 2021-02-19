@@ -11,6 +11,17 @@
   <input type="submit" value="Search">
 </form>
 
-<div id="search_results">{{ search_results|safe }}</div>
+<table>
+  <tr>
+    <td>Name</td>
+    <td>Description</td>
+  </tr>
+  {% for project in search_results %}
+    <tr>
+      <th>{{ project.name }}</th>
+      <th>{{ project.description }}</th>
+    </tr>
+  {% endfor %}
+</table>
 
 {% endblock content %}

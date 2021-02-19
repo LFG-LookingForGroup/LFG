@@ -76,22 +76,7 @@ def search(request):
   if query != None and query.strip() != "":
     search_result = Project.objects.filter(name__icontains=query)
 
-    rows = [f"""
-      <tr>
-        <th>{p.name}</th>
-        <th>{p.description}</th>
-      </tr>""" for p in search_result]
-
-    rendered_results = f"""
-      <table>
-        <tr>
-          <td>Name</td>
-          <td>Description</td>
-        </tr>
-        {"".join(rows)}
-      </table>"""
-
-    return render(request, 'LFGCore/search.html', {'search_results' : rendered_results, 'original_query' : query})
+    return render(request, 'LFGCore/search.html', {'search_results' : search_result, 'original_query' : query})
   return render(request, 'LFGCore/search.html')
 
 def index(request):
