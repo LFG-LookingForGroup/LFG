@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 from pathlib import Path
 from LFGCore.models import *
-from LFGCore.forms import SignUpForm, UserForm, ProfileForm
+from LFGCore.forms import SignUpForm, UserForm, ProfileForm, ProjectForm
 import datetime
 
 
@@ -31,6 +31,17 @@ def project(request, id=None):
       return HttpResponseNotFound(f"<p>Project id {id} does not exist</p>")
 
   return render(request, 'LFGCore/project.html', {"project" : project, "members" : members })
+
+@login_required
+def project_signup(request):
+  if request.method == 'POST':
+    form = ProjectForm(request.POST)
+    if form.is_valid():
+      form.save()
+      return redirect('project')
+  else:
+    form = ProjectForm()
+  return render(request, 'LFGCore/createProject.html', {'form' : form})
 
 def signup(request):
   if request.method == 'POST':
