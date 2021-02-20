@@ -13,5 +13,41 @@
     background-attachment: fixed;
     background-size: 100% 100%;
   }
+
+  #searchBarWrap {
+    display: flex;
+    justify-content: center;
+  }
+
+  #searchBarWrap {
+    display: flex;
+    justify-content: center;
+  }
+
+
+  #searchBar {
+    border: #BA4A00 solid;
+    border-width: .2em;
+    border-radius: .7em 0 0 .7em;
+    padding: .2em .2em .2em .5em;
+    width: 225px;
+  }
+
+  #searchBtn {
+    border: #BA4A00 solid;
+    border-width: .2em;
+    border-radius: 0 .7em .7em 0;
+    background-color: #BA4A00;
+    color: white;
+    font-weight: bold;
+    padding-bottom: .2em;
+
+  }
 </style>
+
+
+<div id="searchBarWrap">
+  <input id="searchBar" type="text" name="searchbar" placeholder="Search for a project" />
+  <button type="submit">Search</i></button>
+</div>
 {% endblock content %}
