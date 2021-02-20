@@ -36,15 +36,15 @@ def project(request, id=None):
     if project == None:
       return HttpResponseNotFound(f"<p>Project id {id} does not exist</p>")
 
-  return render(request, 'LFGCore/project.html', {"project" : project, "members" : members })
+  return render(request, 'LFGCore/project.html', {"project" : project })
 
 @login_required
 def project_create(request):
   if request.method == 'POST':
     form = ProjectForm(request.POST)
     if form.is_valid():
-      form.save()
-      return redirect('project') # todo: redirect user to newly created project page
+      new_project = form.save()
+      return redirect(f'project/{new_project.id}')
   else:
     form = ProjectForm()
   return render(request, 'LFGCore/createProject.html', {'form' : form})

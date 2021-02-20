@@ -26,6 +26,6 @@ urlpatterns = [
     path('accounts/create', views.signup, name='create_account'),
     path('search', views.search),
     path('project/<int:id>', views.project, 
-    path('project/create', views.project_create)name = 'project'),
+    path('project/create', views.project_create, name = 'project'),
     path('', views.index, name='home'),
 ]
