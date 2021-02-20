@@ -11,6 +11,13 @@
   <img src="image_defaultProfile.jpg" alt="Username" style="width:100%">
   <h2>{{ user.username }}</h2>>
 
+  {% for member in user.profile.member_set %}
+    {% for role in member %}
+      {% for skill in role %}
+        <p>{{ skill }}</p>
+      {% endfor %}
+    {% endfor %}
+  {% endfor %}
   <h3>Previous Project Experience</h3>
   <ul>
     <p>Project Experience 1</p>
