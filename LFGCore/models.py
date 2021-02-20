@@ -14,6 +14,13 @@ class Profile(models.Model):
   bio = models.CharField(max_length=1000, null=True)
   telephone_number = models.DecimalField(max_digits=11, decimal_places=0, null=True)
 
+for member in user.profile.member_set:
+  for role in member:
+    for skill in role:
+      # etc.
+
+
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
   if created:
@@ -22,6 +29,15 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
   instance.profile.save()
+
+@receiver(post_save, sender=User)
+def create_project(sender, instance, created, **kwargs):
+  if created:
+    Project.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_project(sender, instance, **kwargs):
+  instance.project.save()
 
 class Address(models.Model):
   address1 = models.CharField(max_length=45)

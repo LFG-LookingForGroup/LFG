@@ -33,7 +33,7 @@ def project(request, id=None):
   return render(request, 'LFGCore/project.html', {"project" : project, "members" : members })
 
 @login_required
-def project_signup(request):
+def project_create(request):
   if request.method == 'POST':
     form = ProjectForm(request.POST)
     if form.is_valid():
@@ -56,6 +56,11 @@ def signup(request):
   else:
     form = SignUpForm()
   return render(request, 'LFGCore/signup.html', {'form' : form})
+
+@login_required
+def logout(request):
+  logout(request)
+  redirect('')
 
 @login_required
 @transaction.atomic
