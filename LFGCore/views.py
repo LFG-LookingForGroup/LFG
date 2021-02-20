@@ -19,7 +19,13 @@ def account(request):
 
 @login_required
 def profile(request):
-    return render(request, 'LFGCore/profile.html', {"user":request.user})
+  skills = []
+  for member in request.user.profile.member_set:
+    for role in member.roles:
+      for skill in role.skills:
+        if skill.name not in skills:
+          skills.append(skill.name)
+  return render(request, 'LFGCore/profile.html', {"user":request.user, "user_skills":skills})
 
 @login_required
 def project(request, id=None):
@@ -38,7 +44,7 @@ def project_create(request):
     form = ProjectForm(request.POST)
     if form.is_valid():
       form.save()
-      return redirect('project')
+      return redirect('project') # todo: redirect user to newly created project page
   else:
     form = ProjectForm()
   return render(request, 'LFGCore/createProject.html', {'form' : form})

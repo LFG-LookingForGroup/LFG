@@ -14,13 +14,6 @@ class Profile(models.Model):
   bio = models.CharField(max_length=1000, null=True)
   telephone_number = models.DecimalField(max_digits=11, decimal_places=0, null=True)
 
-for member in user.profile.member_set:
-  for role in member:
-    for skill in role:
-      # etc.
-
-
-
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
   if created:
