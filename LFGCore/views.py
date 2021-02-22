@@ -49,6 +49,23 @@ def project_create(request):
     form = ProjectForm()
   return render(request, 'LFGCore/createProject.html', {'form' : form})
 
+@login_required
+@transaction.atomic
+def update_project(request, project_id, user_id):
+  if request.method == 'POST':
+    project_form = ProjectForm(request.POST, instance=request.user)
+    if project_form.is_valid():
+      project_form.save()
+      messages.success(request, 'Project was updated successfully.')
+      return redirect('project_view')
+    else:
+      messages.error(request, 'Project was not updated.')
+  else:
+    project_form = ProjectForm(instance=request.user)
+  return render(request, 'LFGCore/projectUpdate.html', {
+    'project_form' : project_form,
+  })
+
 def signup(request):
   if request.method == 'POST':
     form = UserCreationForm(request.POST)

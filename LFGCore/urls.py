@@ -25,7 +25,7 @@ urlpatterns = [
     path('accounts/profile/update', views.update_profile, name='profile_update'),
     path('accounts/create', views.signup, name='create_account'),
     path('search', views.search),
-    path('project/<int:id>', views.project), 
-    path('project/create', views.project_create, name = 'project'),
+    path('project/<int:id>', views.project, name= 'project_view'), 
+    path('project/create', views.project_create, name = 'project_create'),
     path('', views.index, name='home'),
 ]

@@ -1,0 +1,13 @@
+{% extends "LFGCore/top.html" %}
+
+{% block header %}
+<title>Update Project</title>
+{% endblock header %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {{ project_form.as_p }}
+    <button type="submit">Save Changes</button>
+</form>
+{% endblock content %}
