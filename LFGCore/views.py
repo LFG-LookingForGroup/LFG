@@ -20,11 +20,11 @@ def account(request):
 @login_required
 def profile(request):
   skills = []
-  for member in request.user.profile.member_set:
-    for role in member.roles:
-      for skill in role.skills:
-        if skill.name not in skills:
-          skills.append(skill.name)
+  # for member in request.user.profile.member_set:
+  #   for role in member.roles:
+  #     for skill in role.skills:
+  #       if skill.name not in skills:
+  #         skills.append(skill.name)
   return render(request, 'LFGCore/profile.html', {"user":request.user, "user_skills":skills})
 
 @login_required
@@ -120,4 +120,7 @@ def search(request):
   return render(request, 'LFGCore/search.html')
 
 def index(request):
-  return render(request, "LFGCore/index.html")
+  if request.user.is_authenticated():
+    return render(request, "LFGCore/index.html")
+  else:
+    return render(request, "LFGCore/index.html")

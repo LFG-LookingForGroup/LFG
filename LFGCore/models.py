@@ -6,7 +6,7 @@ from django.dispatch import receiver
 # User Data Schema
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
-  address = models.OneToOneField('Address', on_delete=models.CASCADE)
+  address = models.OneToOneField('Address', on_delete=models.CASCADE, null=True)
   projects = models.ManyToManyField('Project', through='Member')
   chat_channels = models.ManyToManyField('ChatChannel', related_name="channels")
   chats = models.ManyToManyField('ChatChannel', related_name="chats", through='Chat')
@@ -18,19 +18,6 @@ class Profile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
   if created:
     Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-  instance.profile.save()
-
-@receiver(post_save, sender=User)
-def create_project(sender, instance, created, **kwargs):
-  if created:
-    Project.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_project(sender, instance, **kwargs):
-  instance.project.save()
 
 class Address(models.Model):
   address_1 = models.CharField(max_length=45)
