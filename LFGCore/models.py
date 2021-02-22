@@ -33,8 +33,8 @@ def save_project(sender, instance, **kwargs):
   instance.project.save()
 
 class Address(models.Model):
-  address1 = models.CharField(max_length=45)
-  address2 = models.CharField(max_length=45, null=True)
+  address_1 = models.CharField(max_length=45)
+  address_2 = models.CharField(max_length=45, null=True)
   apartment_number = models.CharField(max_length=45, null=True)
   city = models.CharField(max_length=45)
   state = models.CharField(max_length=45)
@@ -51,16 +51,16 @@ class Project(models.Model):
   channels = models.ManyToManyField('ChatChannel', through='ProjectChannel')
   name = models.CharField(max_length=45)
   description = models.CharField(max_length=10000)
-  startDate = models.DateField(null=True)
-  endDate = models.DateField(null=True)
+  start_date = models.DateField(null=True)
+  end_date = models.DateField(null=True)
 
 class Member(models.Model):
   profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
   project = models.ForeignKey(Project, on_delete=models.CASCADE)
   roles = models.ManyToManyField('Role')
   is_owner = models.BooleanField()
-  startDate = models.DateField()
-  endDate = models.DateField(null=True)
+  start_date = models.DateField()
+  end_date = models.DateField(null=True)
 
 class Role(models.Model):
   project = models.ForeignKey(Project, on_delete=models.CASCADE)
