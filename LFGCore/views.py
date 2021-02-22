@@ -44,6 +44,7 @@ def project_create(request):
     form = ProjectForm(request.POST)
     if form.is_valid():
       new_project = form.save()
+      request.user.profile.projects.add(new_project, through_defaults={"is_owner": True, "startDate": datetime.date.today()})
       return redirect(f'project/{new_project.id}')
   else:
     form = ProjectForm()
