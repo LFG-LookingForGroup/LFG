@@ -27,3 +27,19 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ('name', 'description', 'start_date', 'end_date', )
+
+# class ProjectRoleForm(forms.Form):
+#     project_id = forms.IntegerField(widget = forms.HiddenInput())
+#     title = forms.CharField(max_length=45, required=True)
+#     description = forms.CharField(max_length=250, required=False)
+#     skills = forms.ModelMultipleChoiceField(queryset=Skill.objects.all())
+
+class ProjectRoleForm(forms.ModelForm):
+    class Meta:
+        model = Role
+        fields = ('title', 'description', 'project', 'skills')
+
+    def __init__(self, *args, **kwargs):
+        super(ProjectRoleForm, self).__init__(*args, **kwargs)
+        self.fields['project'].widget = forms.HiddenInput()
+        self.fields['skills'] = forms.ModelMultipleChoiceField(queryset=Skill.objects.all(), widget=forms.SelectMultiple())

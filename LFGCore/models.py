@@ -57,9 +57,12 @@ class Role(models.Model):
   description = models.CharField(max_length=1000)
 
 class Skill(models.Model):
-  parent = models.ForeignKey("self", on_delete=models.CASCADE)
+  parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
   name = models.CharField(max_length=45)
   description = models.CharField(max_length=250)
+
+  def __str__(self):
+    return self.name
 
 # Chat Schema
 class Chat(models.Model):

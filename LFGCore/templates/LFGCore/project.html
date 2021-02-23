@@ -25,12 +25,39 @@
   </li>
   {% endfor %}
 </ul>
-<h3>New Member Creation</h3>>
-<input type="text" placeholder="New Member's Username">
-<br>
-<input type="text" placeholder="Role Name">
-<br>
-<button>Add New Member</button>>
+<h3>Add New Project Role</h3>
+<form action="/role/create" method='post'>
+  {% csrf_token %}
+  {{ role_form.as_p }}
+  <button type="submit">Add Role</button>
+</form>
+
+<h3>Roles:</h3>
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Required Skills</th>
+  </tr>
+  {% for role in project.role_set.all %}
+  <tr>
+    <td style='border: 1px solid black; padding: 5px'>{{ role.title }}</td>
+    <td style='border: 1px solid black; padding: 5px'>{{ role.description }}</td>
+    <td style='border: 1px solid black; padding: 5px'>
+      {% for skill in role.skills.all %}
+        {{ skill }},
+      {% endfor %}
+    </td>
+    <td>
+      <form action="/role/delete", method='post'>
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ role.id }}">
+        <button type="submit">Delete Role</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
 
 
 {% endblock content %}

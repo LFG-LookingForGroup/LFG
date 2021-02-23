@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 from pathlib import Path
 from LFGCore.models import *
-from LFGCore.forms import SignUpForm, UserForm, ProfileForm, ProjectForm
+from LFGCore.forms import SignUpForm, UserForm, ProfileForm, ProjectForm, ProjectRoleForm
 import datetime
 
 
@@ -36,7 +36,30 @@ def project(request, id=None):
     if project == None:
       return HttpResponseNotFound(f"<p>Project id {id} does not exist</p>")
 
-  return render(request, 'LFGCore/project.html', {"project" : project })
+  role_form = ProjectRoleForm(initial={'project' : project})
+  return render(request, 'LFGCore/project.html', {"project" : project , "role_form" : role_form })
+
+@login_required
+def role_create(request):
+  if request.method == 'POST':
+    role_form = ProjectRoleForm(request.POST)
+    if role_form.is_valid():
+      new_role = role_form.save()
+      return redirect(f'/project/{new_role.project.id}')
+  else:
+    return HttpResponseNotFound()
+
+@login_required
+def role_delete(request):
+  if request.method != 'POST':
+    return HttpResponseNotFound()
+  elif not Role.objects.filter(id=request.POST['id']).exists():
+    return HttpResponseNotFound()
+  else:
+    to_delete = Role.objects.get(id=request.POST['id'])
+    project_id = to_delete.project.id
+    to_delete.delete()
+    return redirect(f'/project/{project_id}')
 
 @login_required
 def project_create(request):
@@ -45,7 +68,7 @@ def project_create(request):
     if form.is_valid():
       new_project = form.save()
       request.user.profile.projects.add(new_project, through_defaults={"is_owner": True, "start_date": datetime.date.today()})
-      return redirect(f'project/{new_project.id}')
+      return redirect(f'/project/{new_project.id}')
   else:
     form = ProjectForm()
   return render(request, 'LFGCore/createProject.html', {'form' : form})
@@ -120,7 +143,7 @@ def search(request):
   return render(request, 'LFGCore/search.html')
 
 def index(request):
-  if request.user.is_authenticated():
+  if request.user.is_authenticated:
     return render(request, "LFGCore/index.html")
   else:
     return render(request, "LFGCore/index.html")
