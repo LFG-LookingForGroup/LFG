@@ -13,7 +13,8 @@ class Profile(models.Model):
   friends = models.ManyToManyField("self", through='Friend')
   bio = models.CharField(max_length=1000, null=True)
   telephone_number = models.DecimalField(max_digits=11, decimal_places=0, null=True)
-
+  applicant = models.ManyToManyField('Project', through='Role')
+  
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
   if created:

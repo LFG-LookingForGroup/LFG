@@ -124,3 +124,10 @@ def index(request):
     return render(request, "LFGCore/index.html")
   else:
     return render(request, "LFGCore/index.html")
+
+@login_required
+@transaction.atomic
+def apply(request):
+  
+  return render(request, 'LFGCore/project.html', {"project" : project })
+
