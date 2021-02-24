@@ -1,4 +1,4 @@
-{% extends "LFGCore/top.html" %}
+{% extends logged_in_variable|yesno:"top.html,notloggedtop.html" %}
 
 {% block header %}
 <title>Profile</title>

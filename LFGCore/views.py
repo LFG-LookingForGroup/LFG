@@ -18,9 +18,22 @@ def account(request):
   return render(request, "LFGCore/account.html")
 
 @login_required
-def profile(request):
+def profile(request, id=None):
   skills = []
-  return render(request, 'LFGCore/profile.html', {"user":request.user, "user_skills":skills})
+  if id == None:
+    return HttpResponseNotFound(f"<p>404 ERROR Profile does not exist</p>")
+  else:
+    profile = Profile.objects.get(id=id)
+    skills = Skills.objects.get(id=id)
+    if profile == None:
+      return HttpResponseNotFound(f"<p>Profile id {id} does not exist</p>")
+  
+  # for member in request.user.profile.member_set:
+  #   for role in member.roles:
+  #     for skill in role.skills:
+  #       if skill.name not in skills:
+  #         skills.append(skill.name)
+  return render(request, 'LFGCore/profile.html', {"user": profile, "user_skills":skills, 'logged_in' : request.user.is_authenticated })
 
 @login_required
 def project(request, id=None):
