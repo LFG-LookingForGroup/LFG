@@ -15,12 +15,31 @@
   <tr>
     <td>Name</td>
     <td>Description</td>
+    <td>Roles</td>
   </tr>
   {% for project in search_results %}
     <tr>
-      <th>{{ project.name }}</th>
+      <th><a href="/project/{{ project.id }}">{{ project.name }}</a></th>
       <th>{{ project.description }}</th>
+      <th>
+        <table>
+          <tr>
+            {% for role in project.role_set.all %}
+              <td>{{ role.title }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            {% for role in project.role_set.all %}
+              <td><form action="/role/apply/{{ role.id }}" method="post">
+                <input type="hidden" name="query" value="{{ original_query }}">
+                <button type="submit">Apply to this role</button>
+              </form></td>
+            {% endfor %}
+          </tr>
+        </table>
+      </th>
     </tr>
+    
   {% endfor %}
 </table>
 

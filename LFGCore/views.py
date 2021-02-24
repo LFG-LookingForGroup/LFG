@@ -20,11 +20,6 @@ def account(request):
 @login_required
 def profile(request):
   skills = []
-  # for member in request.user.profile.member_set:
-  #   for role in member.roles:
-  #     for skill in role.skills:
-  #       if skill.name not in skills:
-  #         skills.append(skill.name)
   return render(request, 'LFGCore/profile.html', {"user":request.user, "user_skills":skills})
 
 @login_required
@@ -60,6 +55,21 @@ def role_delete(request):
     project_id = to_delete.project.id
     to_delete.delete()
     return redirect(f'/project/{project_id}')
+
+@login_required
+def role_apply(request, id=None):
+  if id == None:
+    return HttpResponseNotFound()
+  elif request.method != 'POST':
+    return HttpResponseNotFound()
+  elif !Role.objects.filter(id=id).exists():
+    return HttpResponseNotFound()
+  elif request.user.profile.applications.filter(role__id=id).exists():
+    return HttpResponseNotFound()
+  else:
+    role = Role.objects.get(id=id)
+    request.user.profile.applications.add(role, through_defaults={ status: 'A' })
+    return redirect(f'/search/{request.POST['query']}')
 
 @login_required
 def project_create(request):
