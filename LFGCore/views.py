@@ -102,7 +102,7 @@ def signup(request):
       return redirect('home')
   else:
     form = SignUpForm()
-  return render(request, 'LFGCore/signup.html', {'form' : form})
+  return render(request, 'LFGCore/signup.html', {'form' : form, 'logged_in' : request.user.is_authenticated })
 
 @login_required
 def logout(request):
@@ -139,14 +139,11 @@ def search(request):
   if query != None and query.strip() != "":
     search_result = Project.objects.filter(name__icontains=query)
 
-    return render(request, 'LFGCore/search.html', {'search_results' : search_result, 'original_query' : query})
-  return render(request, 'LFGCore/search.html')
+    return render(request, 'LFGCore/search.html', {'search_results' : search_result, 'original_query' : query, 'logged_in' : request.user.is_authenticated })
+  return render(request, 'LFGCore/search.html', { 'logged_in' : request.user.is_authenticated })
 
 def index(request):
-  if request.user.is_authenticated:
-    return render(request, "LFGCore/index.html")
-  else:
-    return render(request, "LFGCore/index.html")
+  return render(request, "LFGCore/index.html", { 'logged_in' : request.user.is_authenticated })
 
 @login_required
 @transaction.atomic
