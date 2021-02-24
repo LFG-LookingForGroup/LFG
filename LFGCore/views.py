@@ -62,14 +62,14 @@ def role_apply(request, id=None):
     return HttpResponseNotFound()
   elif request.method != 'POST':
     return HttpResponseNotFound()
-  elif !Role.objects.filter(id=id).exists():
+  elif not Role.objects.filter(id=id).exists():
     return HttpResponseNotFound()
   elif request.user.profile.applications.filter(role__id=id).exists():
     return HttpResponseNotFound()
   else:
     role = Role.objects.get(id=id)
-    request.user.profile.applications.add(role, through_defaults={ status: 'A' })
-    return redirect(f'/search/{request.POST['query']}')
+    request.user.profile.applications.add(role, through_defaults={ "status": 'A' })
+    return redirect(f'/search/{request.POST["query"]}')
 
 @login_required
 def project_create(request):
