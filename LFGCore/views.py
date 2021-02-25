@@ -24,7 +24,7 @@ def profile(request, id=None):
     return HttpResponseNotFound(f"<p>404 ERROR Profile does not exist</p>")
   else:
     profile = Profile.objects.get(id=id)
-    skills = Skills.objects.get(id=id)
+    skills = Skill.objects.get(id=id)
     if profile == None:
       return HttpResponseNotFound(f"<p>Profile id {id} does not exist</p>")
   
