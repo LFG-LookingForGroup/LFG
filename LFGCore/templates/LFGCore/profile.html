@@ -9,8 +9,9 @@
 
 <div class="card">
   <img src="image_defaultProfile.jpg" alt="Username" style="width:100%">
-  <h2>{{ user.username }}</h2>>
-
+  <h2>{{ user.username }}</h2>
+  
+  <h2>Project Memberships:</h2>
 
   <ul>
     {% for member in members %}
@@ -22,6 +23,13 @@
         {% endfor %}
       </ul>
     </li>
+    {% endfor %}
+  </ul>
+
+  <h2>Active Applications:</h2>
+  <ul>
+    {% for application in user.applications %}
+      <li>{{ application.role.title }}, {{ application.role.project.name }}</li>
     {% endfor %}
   </ul>
 

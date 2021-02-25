@@ -19,7 +19,7 @@
   </tr>
   {% for project in search_results %}
     <tr>
-      <th><a href="/project/{{ project.id }}">{{ project.name }}</a></th>
+      <th><a href="/project/{{ project.id }}/">{{ project.name }}</a></th>
       <th>{{ project.description }}</th>
       <th>
         <table>
@@ -30,7 +30,8 @@
           </tr>
           <tr>
             {% for role in project.role_set.all %}
-              <td><form action="/role/apply/{{ role.id }}" method="post">
+              <td><form action="/role/apply/{{ role.id }}/" method="post">
+                {% csrf_token %}
                 <input type="hidden" name="query" value="{{ original_query }}">
                 <button type="submit">Apply to this role</button>
               </form></td>
