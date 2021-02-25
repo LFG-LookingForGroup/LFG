@@ -1,7 +1,7 @@
 from django.utils import translation
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -120,9 +120,9 @@ def signup(request):
   return render(request, 'LFGCore/signup.html', {'form' : form, 'logged_in' : request.user.is_authenticated })
 
 @login_required
-def logout(request):
+def logout_user(request):
   logout(request)
-  redirect('')
+  return redirect('/')
 
 @login_required
 @transaction.atomic

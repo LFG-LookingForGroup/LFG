@@ -1,21 +1,14 @@
--
-{% extends "LFGCore/top.html" %}
+{% extends "LFGCore/notloggedtop.html" %}
 
 {% block header %}
 <title>Login</title>
 {% endblock header %}
 
-<body>
-
-
-
-
-  {% block content %}
-  <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
-  {% endblock %}
-</body>
+{% block content %}
+<h2>Login</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Login</button>
+</form>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends "LFGCore/notloggedtop.html" %}
+{% extends logged_in|yesno:"LFGCore/top.html,LFGCore/notloggedtop.html" %}
 
 {% block header %}
 <title>Welcome to LFG!</title>
