@@ -69,7 +69,7 @@ def role_apply(request, id=None):
     return HttpResponseNotFound()
   elif not Role.objects.filter(id=id).exists():
     return HttpResponseNotFound()
-  elif request.user.profile.applications.filter(role__id=id).exists():
+  elif request.user.profile.applications.filter(applied_role__id=id).exists():
     return HttpResponseNotFound()
   else:
     role = Role.objects.get(id=id)
