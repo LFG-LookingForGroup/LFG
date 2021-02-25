@@ -13,8 +13,15 @@
 
 
   <ul>
-    {% for skill in skills %}
-    <li> {{skill}}</li>
+    {% for member in members %}
+    <li>{{ member.profile.user.username }}</li>
+    <li>Roles:
+      <ul>
+        {% for role in member.roles %}
+        <li>{{ role.title }}</li>
+        {% endfor %}
+      </ul>
+    </li>
     {% endfor %}
   </ul>
 
