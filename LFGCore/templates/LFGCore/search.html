@@ -30,11 +30,13 @@
           </tr>
           <tr>
             {% for role in project.role_set.all %}
+              {% if role not in user.profile.applications.all %}
               <td><form action="/role/apply/{{ role.id }}/" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="query" value="{{ original_query }}">
                 <button type="submit">Apply to this role</button>
               </form></td>
+              {% endif %}
             {% endfor %}
           </tr>
         </table>

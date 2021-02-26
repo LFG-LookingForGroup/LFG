@@ -28,8 +28,8 @@
 
   <h2>Active Applications:</h2>
   <ul>
-    {% for application in user.applications %}
-      <li>{{ application.role.title }}, {{ application.role.project.name }}</li>
+    {% for role in user.profile.applications.all %}
+      <li>{{ role.title }}, {{ role.project.name }}</li>
     {% endfor %}
   </ul>
 
