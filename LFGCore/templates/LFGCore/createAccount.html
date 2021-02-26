@@ -1,4 +1,4 @@
-{% extends "LFGCore/top.html" %}
+{% extends logged_in|yesno:"LFGCore/top.html,LFGCore/notloggedtop.html" %}
 
 {% block header %}
 <title>Account Creation</title>
