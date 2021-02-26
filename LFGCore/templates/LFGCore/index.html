@@ -47,7 +47,10 @@
 
 
 <div id="searchBarWrap">
-  <input id="searchBar" type="text" name="searchbar" placeholder="Search for a project" />
-  <button type="submit">Search</i></button>
+  <form action="/search"></form>
+  <form action="/search">
+    <input type="text" id="SearchBar" name="query" placeholder="Position Title" value="{{ original_query }}"> <br>
+    <button type="submit">Search</i></button>
+  </form>
 </div>
 {% endblock content %}
