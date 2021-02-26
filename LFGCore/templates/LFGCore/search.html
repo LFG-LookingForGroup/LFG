@@ -17,7 +17,7 @@
     <td>Description</td>
     <td>Roles</td>
   </tr>
-  {% for project in search_results %}
+  {% for project in search_results_project %}
   <tr>
     <th><a href="/project/{{ project.id }}/">{{ project.name }}</a></th>
     <th>{{ project.description }}</th>
