@@ -152,9 +152,10 @@ def search(request):
   query = request.GET.get('query', None)
 
   if query != None and query.strip() != "":
-    search_result = Project.objects.filter(name__icontains=query)
+    search_result_project = Project.objects.filter(name__icontains=query)
+    search_result_user = User.objects.filter(name__icontains=query)
 
-    return render(request, 'LFGCore/search.html', {'search_results' : search_result, 'original_query' : query, 'user' : request.user, 'logged_in' : request.user.is_authenticated })
+    return render(request, 'LFGCore/search.html', {'search_results_project' : search_result_project, 'search_results_user' : search_result_user , 'original_query' : query, 'user' : request.user, 'logged_in' : request.user.is_authenticated })
   return render(request, 'LFGCore/search.html', { 'logged_in' : request.user.is_authenticated })
 
 def index(request):
