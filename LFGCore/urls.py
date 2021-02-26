@@ -26,10 +26,11 @@ urlpatterns = [
     path('accounts/profile/update/', views.update_profile, name='profile_update'),
     path('accounts/create/', views.signup, name='create_account'),
     path('search/', views.search),
-    path('project/<int:id>/', views.project, name= 'project_view'), 
+    path('project/<int:id>/', views.project, name= 'project_view'),
     path('project/create/', views.project_create, name = 'project_create'),
     path('role/create/', views.role_create, name='role_create'),
     path('role/delete/', views.role_delete, name='role_delete'),
     path('role/apply/<int:id>/', views.role_apply, name='role_apply'),
-    path('', views.index, name='home'),
+    path('application/updatestatus/<int:id>', views.application_update_status, name='application_update_status'),
+    path('', views.index, name='home')
 ]

@@ -25,6 +25,23 @@
   </li>
   {% endfor %}
 </ul>
+
+<h2>Applications</h2>
+<ul>
+  {% for role in project.role_set.all %}
+    <li>
+      {{ role.title }}
+      <ul>
+        {% for application in role.application_set.all %}
+          <li>
+            {{ application.applicant.user.username }}, {{ application.get_status_display }}
+          </li>
+        {% endfor %}
+      </ul>
+    </li>
+  {% endfor %}
+</ul>
+
 <h3>Add New Project Role</h3>
 <form action="/role/create/" method='post'>
   {% csrf_token %}

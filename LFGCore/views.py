@@ -77,6 +77,20 @@ def role_apply(request, id=None):
     return redirect(f'/search/?query={request.POST["query"]}')
 
 @login_required
+def application_update_status(request, id):
+  if request.method != 'POST':
+    return HttpResponseNotFound()
+  elif not Application.objects.filter(id=id).exists():
+    return HttpResponseNotFound()
+  elif request.POST.get('newstatus', '') not in map(lambda t: t[0], Application._meta.get_field('status').choices):
+    return HttpResponseNotFound()
+  else:
+    application = Application.objects.get(id=id)
+    application.status = request.POST['newstatus']
+    application.save()
+    return redirect(f'/project/{application.role.project.id}/' )
+
+@login_required
 def project_create(request):
   if request.method == 'POST':
     form = ProjectForm(request.POST)
