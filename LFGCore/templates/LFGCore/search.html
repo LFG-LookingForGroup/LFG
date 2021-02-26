@@ -18,11 +18,12 @@
     <td>Roles</td>
   </tr>
   {% for project in search_results %}
-<<<<<<< HEAD
   <tr>
     <th><a href="/project/{{ project.id }}/">{{ project.name }}</a></th>
     <th>{{ project.description }}</th>
     <th>
+      {% empty %}
+      <li>Sorry, no results were found.</li>
       <table>
         <tr>
           {% for role in project.role_set.all %}
@@ -38,39 +39,13 @@
               <button type="submit">Apply to this role</button>
             </form>
           </td>
+
           {% endfor %}
         </tr>
       </table>
     </th>
   </tr>
 
-=======
-    <tr>
-      <th><a href="/project/{{ project.id }}/">{{ project.name }}</a></th>
-      <th>{{ project.description }}</th>
-      <th>
-        <table>
-          <tr>
-            {% for role in project.role_set.all %}
-              <td>{{ role.title }}</td>
-            {% endfor %}
-          </tr>
-          <tr>
-            {% for role in project.role_set.all %}
-              {% if role not in user.profile.applications.all %}
-              <td><form action="/role/apply/{{ role.id }}/" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="query" value="{{ original_query }}">
-                <button type="submit">Apply to this role</button>
-              </form></td>
-              {% endif %}
-            {% endfor %}
-          </tr>
-        </table>
-      </th>
-    </tr>
-    
->>>>>>> 71c93b6c28f6e886865c5f06afdcc68f659ba3aa
   {% endfor %}
 </table>
 
