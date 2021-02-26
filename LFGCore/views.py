@@ -69,12 +69,12 @@ def role_apply(request, id=None):
     return HttpResponseNotFound()
   elif not Role.objects.filter(id=id).exists():
     return HttpResponseNotFound()
-  elif request.user.profile.applications.filter(applied_role__id=id).exists():
+  elif request.user.profile.applications.filter(id=id).exists():
     return HttpResponseNotFound()
   else:
     role = Role.objects.get(id=id)
     request.user.profile.applications.add(role, through_defaults={ "status": 'A' })
-    return redirect(f'/search/{request.POST["query"]}')
+    return redirect(f'/search/?query={request.POST["query"]}')
 
 @login_required
 def project_create(request):
@@ -154,7 +154,7 @@ def search(request):
   if query != None and query.strip() != "":
     search_result = Project.objects.filter(name__icontains=query)
 
-    return render(request, 'LFGCore/search.html', {'search_results' : search_result, 'original_query' : query, 'logged_in' : request.user.is_authenticated })
+    return render(request, 'LFGCore/search.html', {'search_results' : search_result, 'original_query' : query, 'user' : request.user, 'logged_in' : request.user.is_authenticated })
   return render(request, 'LFGCore/search.html', { 'logged_in' : request.user.is_authenticated })
 
 def index(request):

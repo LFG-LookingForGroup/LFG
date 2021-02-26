@@ -13,7 +13,7 @@ class Profile(models.Model):
   friends = models.ManyToManyField("self", through='Friend')
   bio = models.CharField(max_length=1000, null=True)
   telephone_number = models.DecimalField(max_digits=11, decimal_places=0, null=True)
-  applications = models.ManyToManyField('Role', through='Application')
+  applications = models.ManyToManyField('Role', through='Application', related_name="role_application")
   
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -57,8 +57,8 @@ class Role(models.Model):
   description = models.CharField(max_length=1000)
 
 class Application(models.Model):
-  applicant = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="role_applicant")
-  role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="applied_role")
+  applicant = models.ForeignKey(Profile, on_delete=models.CASCADE)
+  role = models.ForeignKey(Role, on_delete=models.CASCADE)
   status = models.CharField(max_length=1, choices=(
     ('A', 'Applied'),
     ('O', 'Offered'),
