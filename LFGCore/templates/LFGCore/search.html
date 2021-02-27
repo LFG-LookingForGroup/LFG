@@ -23,30 +23,54 @@
     <th>{{ project.description }}</th>
     <th>
       {% empty %}
-      <li>Sorry, no results were found.</li>
-      <table>
-        <tr>
-          {% for role in project.role_set.all %}
-          <td>{{ role.title }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          {% for role in project.role_set.all %}
-          <td>
-            <form action="/role/apply/{{ role.id }}/" method="post">
-              {% csrf_token %}
-              <input type="hidden" name="query" value="{{ original_query }}">
-              <button type="submit">Apply to this role</button>
-            </form>
-          </td>
+    <th>Sorry, no project results were found.</th>
+    <table>
+      <tr>
+        {% for role in project.role_set.all %}
+        <td>{{ role.title }}</td>
+        {% endfor %}
+      </tr>
+      <tr>
+        {% for role in project.role_set.all %}
+        <td>
+          <form action="/role/apply/{{ role.id }}/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="query" value="{{ original_query }}">
+            <button type="submit">Apply to this role</button>
+          </form>
+        </td>
 
-          {% endfor %}
-        </tr>
-      </table>
+        {% endfor %}
+      </tr>
+    </table>
     </th>
   </tr>
 
   {% endfor %}
+</table>
+<table>
+  <tr>
+    <td>Username</td>
+    <td>First Name</td>
+    <td>Last Name</td>
+  </tr>
+  {% for user in search_results_user %}
+  <tr>
+    <th>{{ user.username }}</th>
+    <th>{{ user.first_name }}</th>
+    <th>{{ user.last_name }}</th>
+    <th>
+      {% empty %}
+    <th>Sorry, no user results were found.</th>
+    </th>
+
+
+  </tr>
+</table>
+
+</tr>
+
+{% endfor %}
 </table>
 
 {% endblock content %}
