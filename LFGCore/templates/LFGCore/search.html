@@ -54,11 +54,11 @@
     <td>First Name</td>
     <td>Last Name</td>
   </tr>
-  {% for username in search_results_user %}
+  {% for user in search_results_user %}
   <tr>
-    <th>{{ User.username }}</th>
-    <th>{{ User.first_name }}</th>
-    <th>{{ User.last_name }}</th>
+    <th>{{ user.username }}</th>
+    <th>{{ user.first_name }}</th>
+    <th>{{ user.last_name }}</th>
     <th>
       {% empty %}
     <th>Sorry, no user results were found.</th>
