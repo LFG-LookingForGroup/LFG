@@ -91,6 +91,17 @@ def application_update_status(request, id):
     return redirect(f'/project/{application.role.project.id}/' )
 
 @login_required
+def accept_offer(request, id):
+  if request.method != 'POST':
+    return HttpResponseNotFound()
+  elif not Application.objects.filter(id=id).exists():
+    return HttpResponseNotFound()
+  else:
+    application = Application.objects.get(id=id)
+    application.applicant.projects.add(application.applicant, through_defaults={"roles": [application.role], "is_owner": False, "start_date": datetime.date.now()})
+    application.delete()
+
+@login_required
 def project_create(request):
   if request.method == 'POST':
     form = ProjectForm(request.POST)
