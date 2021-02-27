@@ -35,6 +35,18 @@
         {% for application in role.application_set.all %}
           <li>
             {{ application.applicant.user.username }}, {{ application.get_status_display }}
+            {% if application.status == 'A' %}
+              <form action="/application/updatestatus/{{ application.id }}/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="newstatus" value="O">
+                <button type="submit">Extend Offer</button>
+              </form>
+              <form action="/application/updatestatus/{{ application.id }}/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="newstatus" value="R">
+                <button type="submit">Reject Application</button>
+              </form>
+            {% endif %}
           </li>
         {% endfor %}
       </ul>

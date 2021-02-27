@@ -62,8 +62,8 @@ class Application(models.Model):
   status = models.CharField(max_length=1, choices=(
     ('A', 'Applied'),
     ('O', 'Offered'),
-    ('C', 'Accepted'),
-    ('R', 'Rejected')
+    ('R', 'Rejected'),
+    ('D', 'Declined')
   ))
 
 class Skill(models.Model):
