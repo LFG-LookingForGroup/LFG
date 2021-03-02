@@ -10,7 +10,7 @@ from django.db import transaction
 from pathlib import Path
 from LFGCore.models import *
 from LFGCore.forms import SignUpForm, UserForm, ProfileForm, ProjectForm, ProjectRoleForm
-import datetime
+from datetime import datetime
 
 
 @login_required
@@ -25,7 +25,7 @@ def profile(request, id=None):
   else:
     user = User.objects.get(id=id)
   
-  return render(request, 'LFGCore/profile.html', {"user": user, "user_skills":[], 'logged_in' : request.user.is_authenticated })
+  return render(request, 'LFGCore/profile.html', {"user": user, "skillset": user.profile.get_resume(), 'logged_in' : request.user.is_authenticated })
 
 @login_required
 def project(request, id=None):
@@ -98,8 +98,11 @@ def accept_offer(request, id):
     return HttpResponseNotFound()
   else:
     application = Application.objects.get(id=id)
-    application.applicant.projects.add(application.applicant, through_defaults={"roles": [application.role], "is_owner": False, "start_date": datetime.date.now()})
+    application.applicant.projects.add(application.role.project, through_defaults={ "is_owner": False, "start_date": datetime.now() })
+    membership = Member.objects.get(project=application.role.project, profile=application.applicant)
+    membership.roles.add(application.role)
     application.delete()
+    return redirect('/profile/')
 
 @login_required
 def project_create(request):
@@ -107,7 +110,7 @@ def project_create(request):
     form = ProjectForm(request.POST)
     if form.is_valid():
       new_project = form.save()
-      request.user.profile.projects.add(new_project, through_defaults={"is_owner": True, "start_date": datetime.date.today()})
+      request.user.profile.projects.add(new_project, through_defaults={"is_owner": True, "start_date": datetime.now()})
       return redirect(f'/project/{new_project.id}')
   else:
     form = ProjectForm()
@@ -159,7 +162,7 @@ def update_profile(request, user_id):
       user_form.save()
       profile_form.save()
       messages.success(request, 'Profile was updated successfully.')
-      return redirect('profile_view')
+      return redirect('my_profile_view')
     else:
       messages.error(request, 'Profile was not updated.')
   else:
