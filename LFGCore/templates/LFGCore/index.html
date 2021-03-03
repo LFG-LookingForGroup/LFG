@@ -5,7 +5,8 @@
 {% endblock header %}
 
 {% block content %}
-<h1 style="text-align: center;">Test</h1>
+<h1 style="text-align: center;">Welcome to LFG!</h1>
+<center>Please log in, create an account or search for a user or Project here.</center>
 <style>
   body {
     background-image: url('/static/top/logo.svg');
@@ -49,7 +50,8 @@
 <div id="searchBarWrap">
   <form action="/search"></form>
   <form action="/search">
-    <input type="text" id="SearchBar" name="query" placeholder="Position Title" value="{{ original_query }}"> <br>
+    <input type="text" id="SearchBar" name="query" placeholder="Search for Position Title or User"
+      value="{{ original_query }}"> <br>
     <button type="submit">Search</i></button>
   </form>
 </div>
