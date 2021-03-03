@@ -115,7 +115,7 @@ def project_create(request):
       return redirect(f'/project/{new_project.id}')
   else:
     form = ProjectForm()
-  return render(request, 'LFGCore/createProject.html', {'form' : form})
+  return render(request, 'LFGCore/createProject.html', {'form' : form, 'logged_in' : request.user.is_authenticated })
 
 @login_required
 @transaction.atomic

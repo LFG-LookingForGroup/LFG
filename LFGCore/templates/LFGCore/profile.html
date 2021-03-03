@@ -14,14 +14,10 @@
   <h2>Project Memberships:</h2>
 
   <ul>
-    {% for member in members %}
-    <li>{{ member.profile.user.username }}</li>
-    <li>Roles:
-      <ul>
-        {% for role in member.roles %}
-        <li>{{ role.title }}</li>
-        {% endfor %}
-      </ul>
+    {% for member in user.profile.member_set.all %}
+    <li>
+      <p>{{ member.project.name }}</p>
+      <p>{{ member.role.title }}</p>
     </li>
     {% endfor %}
   </ul>
