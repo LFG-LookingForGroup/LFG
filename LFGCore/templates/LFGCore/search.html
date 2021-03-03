@@ -56,7 +56,7 @@
   </tr>
   {% for user in search_results_user %}
   <tr>
-    <th>{{ user.username }}</th>
+    <th><a href="/accounts/profile/{{ user.id }}/">{{ user.username }}</a></th>
     <th>{{ user.first_name }}</th>
     <th>{{ user.last_name }}</th>
     <th>
