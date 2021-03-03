@@ -111,11 +111,14 @@ def project_create(request):
     form = ProjectForm(request.POST)
     if form.is_valid():
       new_project = form.save()
+      new_role = Role(project=new_project, title="Leader", description="Creator of the project.")
       request.user.profile.projects.add(new_project, through_defaults={"is_owner": True, "start_date": datetime.now()})
+      membership = request.user.profile.member_set.get(project=new_project)
+      membership.roles.add(new_role)
       return redirect(f'/project/{new_project.id}')
   else:
     form = ProjectForm()
-  return render(request, 'LFGCore/createProject.html', {'form' : form})
+  return render(request, 'LFGCore/createProject.html', {'form' : form, 'logged_in' : request.user.is_authenticated })
 
 @login_required
 @transaction.atomic
