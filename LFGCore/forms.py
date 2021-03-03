@@ -24,6 +24,9 @@ class ProfileForm(forms.ModelForm):
         fields = ('bio',)
 
 class ProjectForm(forms.ModelForm):
+    start_date = forms.DateField(help_text='Format: YYYY-MM-DD')
+    end_date = forms.DateField(help_text='Format: YYYY-MM-DD')
+    
     class Meta:
         model = Project
         fields = ('name', 'description', 'start_date', 'end_date', )
