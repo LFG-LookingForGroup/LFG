@@ -32,9 +32,8 @@
       <li>
         {{ application.role.title }}, {{ application.role.project.name }}: {{ application.get_status_display }}
         {% if application.status == 'O' %}
-          <form action="/application/updatestatus/{{ application.id }}/" method="post">
+          <form action="/project/acceptoffer/{{ application.id }}/" method="post">
             {% csrf_token %}
-            <input type="hidden" name="newstatus" value="C">
             <button type="submit">Accept Offer</button>
           </form>
           <form action="/application/updatestatus/{{ application.id }}/" method="post">
@@ -44,6 +43,13 @@
           </form>
         {% endif %}
       </li>
+    {% endfor %}
+  </ul>
+
+  <h2>Skillset:</h2>
+  <ul>
+    {% for skill, time in skillset %}
+      <li>{{ skill }}, {{ time }}</li>
     {% endfor %}
   </ul>
 
