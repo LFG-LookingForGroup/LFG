@@ -11,14 +11,15 @@
   <img src="image_defaultProfile.jpg" alt="Username" style="width:100%">
   <h2>{{ user.username }}</h2>
   
-  <h2>Project Memberships:</h2>
+  <h2>Projects:</h2>
 
   <ul>
     {% for member in user.profile.member_set.all %}
     <li>
-      <p>{{ member.project.name }}</p>
-      <p>{{ member.role.title }}</p>
-    </li>
+      <a href="/project/{{ member.project.id }}/">{{ member.project.name }}</a>
+      {% if member.roles.all %}
+        , {{ member.roles.all.0 }}
+      {% endif %}
     {% endfor %}
   </ul>
 
