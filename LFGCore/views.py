@@ -25,7 +25,8 @@ def profile(request, id=None):
   else:
     user = User.objects.get(id=id)
   
-  return render(request, 'LFGCore/profile.html', {"user": user, "skillset": user.profile.get_resume(), 'logged_in' : request.user.is_authenticated })
+  # return render(request, 'LFGCore/profile.html', {"user": user, "skillset": user.profile.get_resume(), 'logged_in' : request.user.is_authenticated })
+  return render(request, 'LFGCore/profile.html', {"user": user, "skillset": [], 'logged_in' : request.user.is_authenticated })
 
 @login_required
 def project(request, id=None):
