@@ -92,13 +92,13 @@ def application_update_status(request, id):
     return redirect(f'/project/{application.role.project.id}/' )
 
 @login_required
-def accept_offer(request, id):
+def accept_offer(request, application_id):
   if request.method != 'POST':
     return HttpResponseNotFound()
-  elif not Application.objects.filter(id=id).exists():
+  elif not Application.objects.filter(id=application_id).exists():
     return HttpResponseNotFound()
   else:
-    application = Application.objects.get(id=id)
+    application = Application.objects.get(id=application_id)
     application.applicant.projects.add(application.role.project, through_defaults={ "is_owner": False, "start_date": datetime.now() })
     membership = Member.objects.get(project=application.role.project, profile=application.applicant)
     membership.roles.add(application.role)
@@ -106,12 +106,16 @@ def accept_offer(request, id):
     return redirect('/account/profile/')
 
 @login_required
+def quit_position(request, member_id):
+  pass
+
+@login_required
 def project_create(request):
   if request.method == 'POST':
     form = ProjectForm(request.POST)
     if form.is_valid():
       new_project = form.save()
-      new_role = Role(project=new_project, title="Creator", description="Creator of the project.")
+      new_role = Role.objects.create(project=new_project, title="Creator", description="Creator of the project.")
       request.user.profile.projects.add(new_project, through_defaults={"is_owner": True, "start_date": datetime.now()})
       membership = request.user.profile.member_set.get(project=new_project)
       membership.roles.add(new_role)
