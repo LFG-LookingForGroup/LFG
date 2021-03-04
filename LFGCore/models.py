@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 
 # User Data Schema
 class Profile(models.Model):
@@ -22,13 +22,13 @@ class Profile(models.Model):
     for membership in self.member_set.all():
       end_date = membership.end_date
       if end_date == None:
-        end_date = datetime.now()
+        end_date = datetime.now(timezone.utc)
       start_date = membership.start_date
-      duration = datetime.timestamp(end_date - start_date)
-      for role in membership.roles:
-        for skill in role.skills:
+      duration = (end_date - start_date).total_seconds() / 3600
+      for role in membership.roles.all():
+        for skill in role.skills.all():
           skillset[skill] += duration
-    return skillset
+    return [(skill, round(skillset[skill], 2)) for skill in skillset]
   
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

@@ -25,7 +25,7 @@
   </li>
   {% endfor %}
 </ul>
-
+{% if is_owner %}
 <h2>Applications</h2>
 <ul>
   {% for role in project.role_set.all %}
@@ -60,7 +60,7 @@
   {{ role_form.as_p }}
   <button type="submit">Add Role</button>
 </form>
-
+{% endif %}
 <h3>Roles:</h3>
 <table>
   <tr>
@@ -78,11 +78,13 @@
       {% endfor %}
     </td>
     <td>
+      {% if is_owner %}
       <form action="/role/delete/", method='post'>
         {% csrf_token %}
         <input type="hidden" name="id" value="{{ role.id }}">
         <button type="submit">Delete Role</button>
       </form>
+      {% endif %}
     </td>
   </tr>
   {% endfor %}

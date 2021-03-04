@@ -50,7 +50,7 @@
     {% endfor %}
   </ul>
   <center>
-    <form action="/accounts/profile/update/">
+    <form action="/accounts/profile/update/{{ user.id}}">
       <input type="submit" value="Update Profile" />
     </form>
 

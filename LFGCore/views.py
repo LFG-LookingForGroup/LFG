@@ -25,8 +25,11 @@ def profile(request, id=None):
   else:
     user = User.objects.get(id=id)
   
-  # return render(request, 'LFGCore/profile.html', {"user": user, "skillset": user.profile.get_resume(), 'logged_in' : request.user.is_authenticated })
-  return render(request, 'LFGCore/profile.html', {"user": user, "skillset": [], 'logged_in' : request.user.is_authenticated })
+  return render(request, 'LFGCore/profile.html', {
+    "user": user, 
+    "skillset": user.profile.get_resume(), 
+    'logged_in' : request.user.is_authenticated 
+  })
 
 @login_required
 def project(request, id=None):
@@ -38,7 +41,21 @@ def project(request, id=None):
       return HttpResponseNotFound(f"<p>Project id {id} does not exist</p>")
 
   role_form = ProjectRoleForm(initial={'project' : project})
-  return render(request, 'LFGCore/project.html', {"project" : project , "role_form" : role_form })
+  membership = request.user.profile.member_set.filter(project=project)
+  is_owner = False
+  if not membership.exists():
+    membership = None
+  else:
+    membership = membership[0]
+    is_owner = membership.is_owner
+
+  return render(request, 'LFGCore/project.html', {
+    "user" : request.user, 
+    "membership" : membership, 
+    "is_owner" : is_owner,
+    "project" : project, 
+    "role_form" : role_form 
+  })
 
 @login_required
 def role_create(request):
@@ -99,11 +116,11 @@ def accept_offer(request, application_id):
     return HttpResponseNotFound()
   else:
     application = Application.objects.get(id=application_id)
-    application.applicant.projects.add(application.role.project, through_defaults={ "is_owner": False, "start_date": datetime.now() })
+    application.applicant.projects.add(application.role.project, through_defaults={ "is_owner": False, "start_date": datetime.now(timezone.utc) })
     membership = Member.objects.get(project=application.role.project, profile=application.applicant)
     membership.roles.add(application.role)
     application.delete()
-    return redirect('/account/profile/')
+    return redirect('/accounts/profile/')
 
 @login_required
 def quit_position(request, member_id):
@@ -116,13 +133,16 @@ def project_create(request):
     if form.is_valid():
       new_project = form.save()
       new_role = Role.objects.create(project=new_project, title="Creator", description="Creator of the project.")
-      request.user.profile.projects.add(new_project, through_defaults={"is_owner": True, "start_date": datetime.now()})
+      request.user.profile.projects.add(new_project, through_defaults={"is_owner": True, "start_date": datetime.now(timezone.utc)})
       membership = request.user.profile.member_set.get(project=new_project)
       membership.roles.add(new_role)
       return redirect(f'/project/{new_project.id}')
   else:
     form = ProjectForm()
-  return render(request, 'LFGCore/createProject.html', {'form' : form, 'logged_in' : request.user.is_authenticated })
+  return render(request, 'LFGCore/createProject.html', {
+    'form' : form, 
+    'logged_in' : request.user.is_authenticated 
+  })
 
 @login_required
 @transaction.atomic
@@ -153,7 +173,10 @@ def signup(request):
       return redirect('/')
   else:
     form = SignUpForm()
-  return render(request, 'LFGCore/signup.html', {'form' : form, 'logged_in' : request.user.is_authenticated })
+  return render(request, 'LFGCore/signup.html', {
+    'form' : form, 
+    'logged_in' : request.user.is_authenticated 
+  })
 
 @login_required
 def logout_user(request):
@@ -191,15 +214,26 @@ def search(request):
     search_result_project = Project.objects.filter(name__icontains=query)
     search_result_user = User.objects.filter(username__icontains=query)
 
-    return render(request, 'LFGCore/search.html', {'search_results_project' : search_result_project, 'search_results_user' : search_result_user , 'original_query' : query, 'user' : request.user, 'logged_in' : request.user.is_authenticated })
-  return render(request, 'LFGCore/search.html', { 'logged_in' : request.user.is_authenticated })
+    return render(request, 'LFGCore/search.html', {
+      'search_results_project' : search_result_project, 
+      'search_results_user' : search_result_user, 
+      'original_query' : query, 'user' : request.user, 
+      'logged_in' : request.user.is_authenticated 
+    })
+  return render(request, 'LFGCore/search.html', { 
+    'logged_in' : request.user.is_authenticated 
+  })
 
 def index(request):
-  return render(request, "LFGCore/index.html", { 'logged_in' : request.user.is_authenticated })
+  return render(request, "LFGCore/index.html", { 
+    'logged_in' : request.user.is_authenticated 
+  })
 
 @login_required
 @transaction.atomic
 def apply(request):
   
-  return render(request, 'LFGCore/project.html', {"project" : project })
+  return render(request, 'LFGCore/project.html', {
+    "project" : project 
+  })
 
