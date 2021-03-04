@@ -18,7 +18,7 @@
     <li>
       <a href="/project/{{ member.project.id }}/">{{ member.project.name }}</a>
       {% if member.roles.all %}
-        , {{ member.roles.all.0 }}
+        , {{ member.roles.all.0.title }}
       {% endif %}
     {% endfor %}
   </ul>

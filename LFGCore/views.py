@@ -103,7 +103,7 @@ def accept_offer(request, id):
     membership = Member.objects.get(project=application.role.project, profile=application.applicant)
     membership.roles.add(application.role)
     application.delete()
-    return redirect('/profile/')
+    return redirect('/account/profile/')
 
 @login_required
 def project_create(request):
@@ -111,7 +111,7 @@ def project_create(request):
     form = ProjectForm(request.POST)
     if form.is_valid():
       new_project = form.save()
-      new_role = Role(project=new_project, title="Leader", description="Creator of the project.")
+      new_role = Role(project=new_project, title="Creator", description="Creator of the project.")
       request.user.profile.projects.add(new_project, through_defaults={"is_owner": True, "start_date": datetime.now()})
       membership = request.user.profile.member_set.get(project=new_project)
       membership.roles.add(new_role)
