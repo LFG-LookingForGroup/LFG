@@ -10,7 +10,7 @@
 <div class="card">
   <img src="image_defaultProfile.jpg" alt="Username" style="width:100%">
   <h2>{{ user.username }}</h2>
-  
+
   <h2>Projects:</h2>
 
   <ul>
@@ -18,37 +18,42 @@
     <li>
       <a href="/project/{{ member.project.id }}/">{{ member.project.name }}</a>
       {% if member.roles.all %}
-        , {{ member.roles.all.0.title }}
+      , {{ member.roles.all.0.title }}
       {% endif %}
-    {% endfor %}
+      {% endfor %}
   </ul>
 
   <h2>Active Applications:</h2>
   <ul>
     {% for application in user.profile.application_set.all %}
-      <li>
-        {{ application.role.title }}, {{ application.role.project.name }}: {{ application.get_status_display }}
-        {% if application.status == 'O' %}
-          <form action="/project/acceptoffer/{{ application.id }}/" method="post">
-            {% csrf_token %}
-            <button type="submit">Accept Offer</button>
-          </form>
-          <form action="/application/updatestatus/{{ application.id }}/" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="newstatus" value="D">
-            <button type="submit">Decline Offer</button>
-          </form>
-        {% endif %}
-      </li>
+    <li>
+      {{ application.role.title }}, {{ application.role.project.name }}: {{ application.get_status_display }}
+      {% if application.status == 'O' %}
+      <form action="/project/acceptoffer/{{ application.id }}/" method="post">
+        {% csrf_token %}
+        <button type="submit">Accept Offer</button>
+      </form>
+      <form action="/application/updatestatus/{{ application.id }}/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="newstatus" value="D">
+        <button type="submit">Decline Offer</button>
+      </form>
+      {% endif %}
+    </li>
     {% endfor %}
   </ul>
 
   <h2>Skillset:</h2>
   <ul>
     {% for skill, time in skillset %}
-      <li>{{ skill }}, {{ time }}</li>
+    <li>{{ skill }}, {{ time }}</li>
     {% endfor %}
   </ul>
+  <center>
+    <form action="/accounts/profile/update/">
+      <input type="submit" value="Update Profile" />
+    </form>
 
+  </center>
 </div>
 {% endblock content %}
