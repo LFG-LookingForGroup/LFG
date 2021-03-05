@@ -212,7 +212,7 @@ def search(request):
 
   if query != None and query.strip() != "":
     search_result_project = Project.objects.filter(name__icontains=query)
-    search_result_user = User.objects.filter(username__icontains=query)
+    search_result_user = User.objects.filter(username__icontains=query).filter(first_name__icontains=query).filter(last_name__icontains=query)
 
     return render(request, 'LFGCore/search.html', {
       'search_results_project' : search_result_project, 
