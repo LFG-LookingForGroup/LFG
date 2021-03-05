@@ -14,15 +14,9 @@
 
 <h2>Members</h2>
 <ul>
-  {% for member in members %}
-  <li>{{ member.profile.user.username }}</li>
-  <li>Roles:
-    <ul>
-      {% for role in member.roles %}
-      <li>{{ role.title }}</li>
-      {% endfor %}
-    </ul>
-  </li>
+  {% for member in project.member_set.all %}
+  <li>
+    {{ member.profile.user.username }}: {{ member.roles.all|join:", " }}
   {% endfor %}
 </ul>
 {% if is_owner %}
@@ -72,10 +66,15 @@
   <tr>
     <td style='border: 1px solid black; padding: 5px'>{{ role.title }}</td>
     <td style='border: 1px solid black; padding: 5px'>{{ role.description }}</td>
-    <td style='border: 1px solid black; padding: 5px'>
-      {% for skill in role.skills.all %}
-        {{ skill }},
-      {% endfor %}
+    <td style='border: 1px solid black; padding: 5px'>{{ role.skills.all|join:", " }}</td>
+    <td>
+      {% if role not in user.profile.applications.all and role not in membership.roles.all %}
+        <form action="/role/apply/{{ role.id }}/" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="query" value="{{ original_query }}">
+          <button type="submit">Apply to this role</button>
+        </form>
+      {% endif %}
     </td>
     <td>
       {% if is_owner %}
