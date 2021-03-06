@@ -17,34 +17,34 @@
   {% for member in project.member_set.all %}
   <li>
     {{ member.profile.user.username }}: {{ member.roles.all|join:", " }}
-  {% endfor %}
+    {% endfor %}
 </ul>
 {% if is_owner %}
 <h2>Applications</h2>
 <ul>
   {% for role in project.role_set.all %}
-    <li>
-      {{ role.title }}
-      <ul>
-        {% for application in role.application_set.all %}
-          <li>
-            {{ application.applicant.user.username }}, {{ application.get_status_display }}
-            {% if application.status == 'A' %}
-              <form action="/application/updatestatus/{{ application.id }}/" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="newstatus" value="O">
-                <button type="submit">Extend Offer</button>
-              </form>
-              <form action="/application/updatestatus/{{ application.id }}/" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="newstatus" value="R">
-                <button type="submit">Reject Application</button>
-              </form>
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
-    </li>
+  <li>
+    {{ role.title }}
+    <ul>
+      {% for application in role.application_set.all %}
+      <li>
+        {{ application.applicant.user.username }}, {{ application.get_status_display }}
+        {% if application.status == 'A' %}
+        <form action="/application/updatestatus/{{ application.id }}/" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="newstatus" value="O">
+          <button type="submit">Extend Offer</button>
+        </form>
+        <form action="/application/updatestatus/{{ application.id }}/" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="newstatus" value="R">
+          <button type="submit">Reject Application</button>
+        </form>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </li>
   {% endfor %}
 </ul>
 
@@ -69,25 +69,31 @@
     <td style='border: 1px solid black; padding: 5px'>{{ role.skills.all|join:", " }}</td>
     <td>
       {% if role not in user.profile.applications.all and role not in membership.roles.all %}
-        <form action="/role/apply/{{ role.id }}/" method="post">
-          {% csrf_token %}
-          <input type="hidden" name="query" value="{{ original_query }}">
-          <button type="submit">Apply to this role</button>
-        </form>
+      <form action="/role/apply/{{ role.id }}/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="query" value="{{ original_query }}">
+        <button type="submit">Apply to this role</button>
+      </form>
       {% endif %}
     </td>
     <td>
       {% if is_owner %}
-      <form action="/role/delete/", method='post'>
+      <form action="/role/delete/" , method='post'>
         {% csrf_token %}
         <input type="hidden" name="id" value="{{ role.id }}">
         <button type="submit">Delete Role</button>
       </form>
       {% endif %}
     </td>
+
   </tr>
   {% endfor %}
-</table>
+  {% if is_owner %}
+  <center>
+    <form action="/project/update/">
+      <input type="submit" value="Update Project" />
+    </form>
 
-
-{% endblock content %}
+  </center>
+  {% endif %}
+  {% endblock content %}
