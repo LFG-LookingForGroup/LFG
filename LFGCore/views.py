@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
+from django.db.models import Q
 from pathlib import Path
 from LFGCore.models import *
 from LFGCore.forms import SignUpForm, UpdateUserForm, UpdateProfileForm, ProjectForm, ProjectRoleForm
@@ -245,7 +246,7 @@ def search(request):
 
   if query != None and query.strip() != "":
     search_result_project = Project.objects.filter(name__icontains=query)
-    search_result_user = User.objects.filter(username__icontains=query).filter(first_name__icontains=query).filter(last_name__icontains=query)
+    search_result_user = User.objects.filter(Q(username=query) | Q(first_name=query) | Q(last_name=query))
 
     return render(request, 'LFGCore/search.html', {
       'search_results_project' : search_result_project, 
