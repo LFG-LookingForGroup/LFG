@@ -13,7 +13,7 @@ class Profile(models.Model):
   chat_channels = models.ManyToManyField('ChatChannel', related_name="channels")
   chats = models.ManyToManyField('ChatChannel', related_name="chats", through='Chat')
   friends = models.ManyToManyField("self", through='Friend')
-  bio = models.CharField(max_length=1000, null=True)
+  bio = models.CharField(max_length=1000, null=True, default="")
   telephone_number = models.DecimalField(max_digits=11, decimal_places=0, null=True)
   applications = models.ManyToManyField('Role', through='Application', related_name="role_application")
 
@@ -54,7 +54,7 @@ class Project(models.Model):
   channels = models.ManyToManyField('ChatChannel', through='ProjectChannel')
   name = models.CharField(max_length=45)
   description = models.CharField(max_length=10000)
-  start_date = models.DateTimeField(null=True)
+  start_date = models.DateTimeField(default=(lambda: datetime.now(timezone.utc)))
   end_date = models.DateTimeField(null=True)
 
 class Member(models.Model):

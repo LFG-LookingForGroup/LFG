@@ -23,7 +23,7 @@ urlpatterns = [
     path('logout/', views.logout_user, name = 'logout'),
     path('accounts/profile/', views.profile, name='my_profile_view'),
     path('accounts/profile/<int:id>/', views.profile, name='profile_view'),
-    path('accounts/profile/update/<int:id>/', views.update_profile, name='profile_update'),
+    path('accounts/profile/update/', views.update_profile, name='profile_update'),
     path('accounts/create/', views.signup, name='create_account'),
     path('search/', views.search),
     path('project/<int:id>/', views.project, name= 'project_view'),
@@ -32,6 +32,7 @@ urlpatterns = [
     path('role/create/', views.role_create, name='role_create'),
     path('role/delete/', views.role_delete, name='role_delete'),
     path('role/apply/<int:id>/', views.role_apply, name='role_apply'),
+    path('membership/quit/<int:member_id>/', views.quit_membership, name='member_quit'),
     path('application/updatestatus/<int:id>/', views.application_update_status, name='application_update_status'),
     path('', views.index, name='home')
 ]

@@ -1,8 +1,15 @@
+{% extends "LFGCore/notloggedtop.html" %}
+
+{% block header %}
+<title>Sign Up</title>
+{% endblock %}
+
 {% block content %}
   <h2>Sign up</h2>
   <form method="post">
     {% csrf_token %}
-    {% for field in form %}
+    {{ form.as_p }}
+    <!-- {% for field in form %}
       <p>
         {{ field.label_tag }}<br>
         {{ field }}
@@ -13,7 +20,7 @@
           <p style="color: red">{{ error }}</p>
         {% endfor %}
       </p>
-    {% endfor %}
+    {% endfor %}-->
     <button type="submit">Sign up</button>
   </form>
 {% endblock %}

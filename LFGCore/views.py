@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 from pathlib import Path
 from LFGCore.models import *
-from LFGCore.forms import SignUpForm, UserForm, ProfileForm, ProjectForm, ProjectRoleForm
+from LFGCore.forms import SignUpForm, UpdateUserForm, UpdateProfileForm, ProjectForm, ProjectRoleForm
 from datetime import datetime
 
 
@@ -123,8 +123,32 @@ def accept_offer(request, application_id):
     return redirect('/accounts/profile/')
 
 @login_required
-def quit_position(request, member_id):
-  pass
+def quit_membership(request, member_id):
+  if not Member.objects.filter(id=member_id).exists():
+    return HttpResponseNotFound()
+  
+  delete_membership = Member.objects.get(id=member_id)
+  request_membership = Member.objects.filter(profile=request.user.profile, project=delete_membership.project)
+
+  if not request_membership.exists():
+    return HttpResponseNotFound()
+
+  request_membership = request_membership[0]
+
+  if request_membership.is_owner:
+    if request_membership == delete_membership:
+      delete_membership.project.delete()
+      return redirect('/')
+    else:
+      delete_membership.delete()
+      return redirect(f'/project/{request_membership.project.id}/')
+  
+  if request_membership == delete_membership:
+    delete_membership.delete()
+
+    return redirect('my_profile')
+
+  return HttpResponseNotFound()
 
 @login_required
 def project_create(request):
@@ -163,7 +187,7 @@ def update_project(request, project_id, user_id):
 
 def signup(request):
   if request.method == 'POST':
-    form = UserCreationForm(request.POST)
+    form = SignUpForm(request.POST)
     if form.is_valid():
       form.save()
       username = form.cleaned_data.get('username')
@@ -185,20 +209,29 @@ def logout_user(request):
 
 @login_required
 @transaction.atomic
-def update_profile(request, user_id):
+def update_profile(request):
   if request.method == 'POST':
-    user_form = UserForm(request.POST, instance=request.user)
-    profile_form = ProfileForm(request.POST, instance=request.user.profile)
+    user_form = UpdateUserForm(request.POST, instance=request.user)
+    profile_form = UpdateProfileForm(request.POST, instance=request.user.profile)
     if user_form.is_valid() and profile_form.is_valid():
-      user_form.save()
       profile_form.save()
+      if user_form.cleaned_data.get("password1") != "":
+        user_form.save()
+        user = authenticate(username = user_form.cleaned_data.get('username'), password = user_form.cleaned_data.get('password'))
+        login(request, user)
+      else:
+        request.user.username = user_form.cleaned_data.get('username')
+        request.user.first_name = user_form.cleaned_data.get('first_name')
+        request.user.last_name = user_form.cleaned_data.get('last_name')
+        request.user.email = user_form.cleaned_data.get('email')
+        request.user.save()
       messages.success(request, 'Profile was updated successfully.')
       return redirect('my_profile_view')
     else:
       messages.error(request, 'Profile was not updated.')
   else:
-    user_form = UserForm(instance=request.user)
-    profile_form = ProfileForm(instance=request)
+    user_form = UpdateUserForm(instance=request.user)
+    profile_form = UpdateProfileForm(instance=request.user.profile)
   return render(request, 'LFGCore/profileUpdate.html', {
     'user_form' : user_form,
     'profile_form' : profile_form
