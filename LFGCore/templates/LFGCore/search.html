@@ -17,24 +17,24 @@
     <td>Description</td>
     <td>Roles</td>
   </tr>
-  {% for project in search_results_project %}
-    <tr>
+  {% for project, roles in search_results_project %}
+    <tr> 
       <th><a href="/project/{{ project.id }}/">{{ project.name }}</a></th>
       <th>{{ project.description }}</th>
       <th>
       <table>
         <tr>
-          {% for role in project.role_set.all %}
-          <td>{{ role.title }}</td>
+          {% for role, is_applicable in roles %}
+            <td>{{ role.title }}</td>
           {% endfor %}
         </tr>
         <tr>
-          {% for role in project.role_set.all %}
+          {% for role, is_applicable in roles %}
           <td>
-            {% if role not in user.profile.applications.all %}
+            {% if is_applicable %}
               <form action="/role/apply/{{ role.id }}/" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="query" value="{{ original_query }}">
+                <input type="hidden" name="redirect" value="/search/?query={{ original_query }}">
                 <button type="submit">Apply to this role</button>
               </form>
             {% endif %}

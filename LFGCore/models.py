@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from collections import defaultdict
@@ -56,6 +57,23 @@ class Project(models.Model):
   description = models.CharField(max_length=10000)
   start_date = models.DateTimeField(default=(lambda: datetime.now(timezone.utc)))
   end_date = models.DateTimeField(null=True)
+
+  def applicable_role_list(self, user):
+    roles = []
+    for role in self.role_set.all():
+      is_applicable = True
+      if not user.is_authenticated:
+        is_applicable = False
+      else:
+        membership = False
+        if self.member_set.filter(profile=user.profile):
+          membership = self.member_set.get(profile=user.profile)
+        if role in map(lambda a: a.role, user.profile.application_set.filter(~Q(status='R'))):
+          is_applicable = False
+        if membership and role in membership.roles.all():
+          is_applicable = False
+        roles.append((role, is_applicable))
+    return roles
 
 class Member(models.Model):
   profile = models.ForeignKey(Profile, on_delete=models.CASCADE)

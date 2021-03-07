@@ -28,6 +28,7 @@ urlpatterns = [
     path('search/', views.search),
     path('project/<int:id>/', views.project, name= 'project_view'),
     path('project/create/', views.project_create, name = 'project_create'),
+    path('project/update/<int:id>/', views.update_project, name = 'project_update'),
     path('project/acceptoffer/<int:application_id>/', views.accept_offer, name = 'accept_offer'),
     path('role/create/', views.role_create, name='role_create'),
     path('role/delete/', views.role_delete, name='role_delete'),

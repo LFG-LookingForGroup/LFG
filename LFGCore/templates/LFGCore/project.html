@@ -27,6 +27,14 @@
   {% endfor %}
 </ul>
 {% if is_owner %}
+<center>
+  <form action="/project/update/{{project.id}}/">
+    <input type="submit" value="Update Project" />
+  </form>
+
+</center>
+{% endif %}
+{% if is_owner %}
 <h2>Applications</h2>
 <ul>
   {% for role in project.role_set.all %}
@@ -69,16 +77,16 @@
     <th>Description</th>
     <th>Required Skills</th>
   </tr>
-  {% for role in project.role_set.all %}
+  {% for role, is_applicable in role_list %}
   <tr>
     <td style='border: 1px solid black; padding: 5px'>{{ role.title }}</td>
     <td style='border: 1px solid black; padding: 5px'>{{ role.description }}</td>
     <td style='border: 1px solid black; padding: 5px'>{{ role.skills.all|join:", " }}</td>
     <td>
-      {% if role not in user.profile.applications.all and role not in membership.roles.all %}
+      {% if is_applicable %}
       <form action="/role/apply/{{ role.id }}/" method="post">
         {% csrf_token %}
-        <input type="hidden" name="query" value="{{ original_query }}">
+        <input type="hidden" name="redirect" value="/project/{{ project.id }}/">
         <button type="submit">Apply to this role</button>
       </form>
       {% endif %}
@@ -95,12 +103,4 @@
 
   </tr>
   {% endfor %}
-  {% if is_owner %}
-  <center>
-    <form action="/project/update/">
-      <input type="submit" value="Update Project" />
-    </form>
-
-  </center>
-  {% endif %}
-  {% endblock content %}
+{% endblock content %}

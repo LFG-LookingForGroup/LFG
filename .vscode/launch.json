@@ -23,6 +23,17 @@
                 "shell"
             ],
             "django": true
+        },
+        {
+            "name": "Python: Django Http Server",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}\\manage.py",
+            "args": [
+                "runserver",
+                "0.0.0.0:80"
+            ],
+            "django": true
         }
     ]
 }

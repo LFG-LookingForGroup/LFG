@@ -49,12 +49,14 @@ def project(request, id=None):
   else:
     membership = membership[0]
     is_owner = membership.is_owner
+  role_list = project.applicable_role_list(request.user)
 
   return render(request, 'LFGCore/project.html', {
     "user" : request.user, 
     "membership" : membership, 
     "is_owner" : is_owner,
     "project" : project, 
+    "role_list" : role_list,
     "role_form" : role_form 
   })
 
@@ -81,19 +83,25 @@ def role_delete(request):
     return redirect(f'/project/{project_id}')
 
 @login_required
-def role_apply(request, id=None):
-  if id == None:
-    return HttpResponseNotFound()
-  elif request.method != 'POST':
+def role_apply(request, id):
+  if request.method != 'POST':
     return HttpResponseNotFound()
   elif not Role.objects.filter(id=id).exists():
     return HttpResponseNotFound()
-  elif request.user.profile.applications.filter(id=id).exists():
-    return HttpResponseNotFound()
   else:
     role = Role.objects.get(id=id)
-    request.user.profile.applications.add(role, through_defaults={ "status": 'A' })
-    return redirect(f'/search/?query={request.POST["query"]}')
+    if request.user.profile.applications.filter(id=id).exists():
+      application = request.user.profile.application_set.get(role=role)
+      if application.status == 'R':
+        application.status = 'A'
+        application.save()
+        return redirect(request.POST['redirect'])
+      else:
+        return HttpResponseNotFound()
+    else:
+      role = Role.objects.get(id=id)
+      request.user.profile.applications.add(role, through_defaults={ "status": 'A' })
+      return redirect(request.POST['redirect'])
 
 @login_required
 def application_update_status(request, id):
@@ -147,7 +155,7 @@ def quit_membership(request, member_id):
   if request_membership == delete_membership:
     delete_membership.delete()
 
-    return redirect('my_profile')
+    return redirect('/accounts/profile/')
 
   return HttpResponseNotFound()
 
@@ -171,13 +179,14 @@ def project_create(request):
 
 @login_required
 @transaction.atomic
-def update_project(request, project_id, user_id):
+def update_project(request, id):
   if request.method == 'POST':
-    project_form = ProjectForm(request.POST, instance=request.user)
+    project = Project.objects.get(id=id)
+    project_form = ProjectForm(request.POST, instance=project)
     if project_form.is_valid():
       project_form.save()
       messages.success(request, 'Project was updated successfully.')
-      return redirect('project_view')
+      return redirect(f'/project/{id}/')
     else:
       messages.error(request, 'Project was not updated.')
   else:
@@ -227,7 +236,7 @@ def update_profile(request):
         request.user.email = user_form.cleaned_data.get('email')
         request.user.save()
       messages.success(request, 'Profile was updated successfully.')
-      return redirect('my_profile_view')
+      return redirect('/accounts/profile/')
     else:
       messages.error(request, 'Profile was not updated.')
   else:
@@ -246,7 +255,9 @@ def search(request):
 
   if query != None and query.strip() != "":
     search_result_project = Project.objects.filter(name__icontains=query)
-    search_result_user = User.objects.filter(Q(username=query) | Q(first_name=query) | Q(last_name=query))
+    search_result_user = User.objects.filter(Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query))
+
+    search_result_project = [(proj, proj.applicable_role_list(request.user)) for proj in search_result_project]
 
     return render(request, 'LFGCore/search.html', {
       'search_results_project' : search_result_project, 
