@@ -6,6 +6,9 @@ from django.dispatch import receiver
 from collections import defaultdict
 from datetime import datetime, timezone
 
+def now():
+  return datetime.now(timezone.utc)
+
 # User Data Schema
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -55,8 +58,9 @@ class Project(models.Model):
   channels = models.ManyToManyField('ChatChannel', through='ProjectChannel')
   name = models.CharField(max_length=45)
   description = models.CharField(max_length=10000)
-  start_date = models.DateTimeField(default=(lambda: datetime.now(timezone.utc)))
+  start_date = models.DateTimeField(default=now)
   end_date = models.DateTimeField(null=True)
+  active = models.BooleanField(default=True)
 
   def applicable_role_list(self, user):
     roles = []
@@ -75,6 +79,17 @@ class Project(models.Model):
         roles.append((role, is_applicable))
     return roles
 
+  def deactivate(self):
+    self.active = False
+    if self.end_date == None:
+      self.end_date = now()
+    for member in self.member_set.all():
+      member.deactivate()
+    for role in self.role_set.all():
+      for app in role.application_set.all():
+        app.delete()
+    self.save()
+
 class Member(models.Model):
   profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
   project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -82,6 +97,12 @@ class Member(models.Model):
   is_owner = models.BooleanField()
   start_date = models.DateTimeField()
   end_date = models.DateTimeField(null=True)
+  active = models.BooleanField(default=True)
+
+  def deactivate(self):
+    self.active = False
+    self.end_date = now()
+    self.save()
 
 class Role(models.Model):
   project = models.ForeignKey(Project, on_delete=models.CASCADE)

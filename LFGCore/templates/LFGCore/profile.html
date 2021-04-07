@@ -22,7 +22,7 @@
   <h2>Projects:</h2>
 
   <ul>
-    {% for member in user.profile.member_set.all %}
+    {% for member in memberships %}
     <li>
       <a href="/project/{{ member.project.id }}/">{{ member.project.name }}</a>
         {% if member.roles.all %}

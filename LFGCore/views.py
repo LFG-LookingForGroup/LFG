@@ -28,6 +28,7 @@ def profile(request, id=None):
   
   return render(request, 'LFGCore/profile.html', {
     "user": user, 
+    "memberships" : user.profile.member_set.filter(project__active=True),
     "skillset": user.profile.get_resume(), 
     'logged_in' : request.user.is_authenticated 
   })
@@ -38,7 +39,7 @@ def project(request, id=None):
     return HttpResponseNotFound()
   else:
     project = Project.objects.get(id=id)
-    if project == None:
+    if project == None or not project.active:
       return HttpResponseNotFound(f"<p>Project id {id} does not exist</p>")
 
   role_form = ProjectRoleForm(initial={'project' : project})
@@ -146,14 +147,14 @@ def quit_membership(request, member_id):
 
   if request_membership.is_owner:
     if request_membership == delete_membership:
-      delete_membership.project.delete()
+      delete_membership.project.deactivate()
       return redirect('/')
     else:
-      delete_membership.delete()
+      delete_membership.deactivate()
       return redirect(f'/project/{request_membership.project.id}/')
   
   if request_membership == delete_membership:
-    delete_membership.delete()
+    delete_membership.deactivate()
 
     return redirect('/accounts/profile/')
 
@@ -254,8 +255,8 @@ def search(request):
   query = request.GET.get('query', None)
 
   if query != None and query.strip() != "":
-    search_result_project = Project.objects.filter(name__icontains=query)
-    search_result_user = User.objects.filter(Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query))
+    search_result_project = Project.objects.filter(Q(name__icontains=query) & Q(active=True))
+    search_result_user = User.objects.filter((Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query)) & Q(active=True))
 
     search_result_project = [(proj, proj.applicable_role_list(request.user)) for proj in search_result_project]
 
