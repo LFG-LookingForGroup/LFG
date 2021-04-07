@@ -37,6 +37,14 @@ class ProjectForm(forms.ModelForm):
         model = Project
         fields = ('name', 'description', )
 
+class UpdateProjectForm(forms.ModelForm):
+    name = forms.CharField(max_length = 100, required=False)
+    description = forms.CharField(max_length = 1000, required=False)
+
+    class Meta:
+        model = Project
+        fields = ('name', 'description', )
+
 class ProjectRoleForm(forms.ModelForm):
     class Meta:
         model = Role
