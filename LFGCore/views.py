@@ -21,13 +21,15 @@ def account(request):
 @login_required
 def profile(request, id=None):
   user = None
-  if id == None:
+  is_own_profile = id == None
+  if is_own_profile:
     user = request.user
   else:
     user = User.objects.get(id=id)
   
   return render(request, 'LFGCore/profile.html', {
-    "user": user, 
+    "user": user,
+    "is_own_profile": is_own_profile,
     "memberships" : user.profile.member_set.filter(project__active=True),
     "skillset": user.profile.get_resume(), 
     'logged_in' : request.user.is_authenticated 
