@@ -33,6 +33,9 @@ class UpdateProfileForm(forms.ModelForm):
         fields = ('bio', 'telephone_number', )
 
 class ProjectForm(forms.ModelForm):
+    name = forms.CharField(max_length = 100, required=True)
+    description = forms.CharField(max_length = 1000, required=False)
+
     class Meta:
         model = Project
         fields = ('name', 'description', )

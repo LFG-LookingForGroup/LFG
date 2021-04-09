@@ -181,8 +181,8 @@ def project_create(request):
 @login_required
 @transaction.atomic
 def update_project(request, id):
+  project = Project.objects.get(id=id)
   if request.method == 'POST':
-    project = Project.objects.get(id=id)
     project_form = UpdateProjectForm(request.POST, instance=project)
     if project_form.is_valid():
       project_form.save()
@@ -191,7 +191,7 @@ def update_project(request, id):
     else:
       messages.error(request, 'Project was not updated.')
   else:
-    project_form = UpdateProjectForm(instance=request.user)
+    project_form = UpdateProjectForm(instance=project)
   return render(request, 'LFGCore/projectUpdate.html', {
     'project_form' : project_form,
   })
