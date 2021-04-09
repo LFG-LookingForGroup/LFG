@@ -21,13 +21,15 @@ def account(request):
 @login_required
 def profile(request, id=None):
   user = None
-  if id == None:
+  is_own_profile = id == None
+  if is_own_profile:
     user = request.user
   else:
     user = User.objects.get(id=id)
   
   return render(request, 'LFGCore/profile.html', {
-    "user": user, 
+    "user": user,
+    "is_own_profile": is_own_profile,
     "memberships" : user.profile.member_set.filter(project__active=True),
     "skillset": user.profile.get_resume(), 
     'logged_in' : request.user.is_authenticated 
@@ -93,7 +95,7 @@ def role_apply(request, id):
     role = Role.objects.get(id=id)
     if request.user.profile.applications.filter(id=id).exists():
       application = request.user.profile.application_set.get(role=role)
-      if application.status == 'R':
+      if application.status in ['R', 'D']:
         application.status = 'A'
         application.save()
         return redirect(request.POST['redirect'])

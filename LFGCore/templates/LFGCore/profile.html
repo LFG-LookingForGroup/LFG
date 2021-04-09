@@ -62,11 +62,13 @@
     <li>{{ skill }}, {{ time }}</li>
     {% endfor %}
   </ul>
+  {% if is_own_profile %}
   <center>
     <form action="/accounts/profile/update/">
       <input type="submit" value="Update Profile" />
     </form>
 
   </center>
+  {% endif %}
 </div>
 {% endblock content %}
