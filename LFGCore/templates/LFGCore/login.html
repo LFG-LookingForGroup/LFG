@@ -2,13 +2,17 @@
 
 {% block header %}
 <title>Login</title>
+
+
+
 {% endblock header %}
 
 {% block content %}
-<h2>Login</h2>
-<form method="post">
+<h2 style="text-align: center;" class="text-center logo my-4">Login</h2>
+
+<form method="post" >
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Login</button>
+  <button type="submit" class="btn btn-primary">Login</button>
 </form>
 {% endblock %}

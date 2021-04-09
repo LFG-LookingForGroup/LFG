@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'LFGCore.apps.LfgcoreConfig',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [

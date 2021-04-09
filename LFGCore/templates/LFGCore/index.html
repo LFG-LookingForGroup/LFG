@@ -5,14 +5,14 @@
 {% endblock header %}
 
 {% block content %}
-<h1 style="text-align: center;">Welcome to LFG!</h1>
-<center>Please log in, create an account or search for a user or Project here.</center>
+
 <style>
   body {
-    background-image: url('/static/top/logo.svg');
+    
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;
+    
   }
 
   #searchBarWrap {
@@ -44,7 +44,27 @@
     padding-bottom: .2em;
 
   }
+
+  .hero {
+
+    
+    background-image: url('/static/top/logo.svg');
+    opacity: 0.5;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+}
+
+.hero p{
+    opacity: 1;
+}
 </style>
+
+
+<div class="hero" style="height: 600px;">
+<h1 style="text-align: center;">Welcome to LFG!</h1>
+<center>Please log in, create an account or search for a user or Project here.</center>
+
 
 
 <div id="searchBarWrap">
@@ -54,5 +74,6 @@
       value="{{ original_query }}"> <br>
     <button type="submit">Search</i></button>
   </form>
+</div>
 </div>
 {% endblock content %}

@@ -1,22 +1,35 @@
 <!DOCTYPE html>
 <html>
-
+  {% load bootstrap4 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript jquery='full' %}
+  {% block styles %}{% endblock styles %}
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/static/top/main.css">
+  <link href="https://fonts.googleapis.com/css?family=Peralta" rel="stylesheet">
+  
   {% block header %}{% endblock header %}
 </head>
 
-<body>
-  <div class="topnav">
-    <div class="logo"><a href="/"><img src="/static/top/logo.svg" alt="Logo" width="150" height="150" /></a></div>
-    <a href="/login/" class="button">Login</a></li>
-    <a href="/accounts/create/" class="button">Create Account</a></li>
+<body style="width: 90%;margin: auto;">
+  {% block body %}
+  <div class="container">
+  <div class="topnav navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="logo navbar-brand">
+    <a href="/"><img src="/static/top/logo.svg" alt="Logo" width="150" height="150" /></a>
+  
+  </div>
+    <a href="/login/" class="nav-link">Login</a></li>
+    <a href="/accounts/create/" class="nav-item">Create Account</a></li>
 
     </ul>
 
   </div>
+  
   {% block content %}{% endblock content %}
+  {% endblock body %}
+</div>
 </body>
 
 
