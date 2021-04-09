@@ -95,7 +95,7 @@ def role_apply(request, id):
     role = Role.objects.get(id=id)
     if request.user.profile.applications.filter(id=id).exists():
       application = request.user.profile.application_set.get(role=role)
-      if application.status == 'R':
+      if application.status in ['R', 'D']:
         application.status = 'A'
         application.save()
         return redirect(request.POST['redirect'])

@@ -72,11 +72,11 @@ class Project(models.Model):
         membership = False
         if self.member_set.filter(profile=user.profile):
           membership = self.member_set.get(profile=user.profile)
-        if role in map(lambda a: a.role, user.profile.application_set.filter(~Q(status='R'))):
+        if role in map(lambda a: a.role, user.profile.application_set.filter(~(Q(status='R') | Q(status='D')))):
           is_applicable = False
         if membership and role in membership.roles.all():
           is_applicable = False
-        roles.append((role, is_applicable))
+      roles.append((role, is_applicable))
     return roles
 
   def deactivate(self):
