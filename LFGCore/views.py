@@ -10,7 +10,7 @@ from django.db import transaction
 from django.db.models import Q
 from pathlib import Path
 from LFGCore.models import *
-from LFGCore.forms import SignUpForm, UpdateUserForm, UpdateProfileForm, ProjectForm, ProjectRoleForm
+from LFGCore.forms import SignUpForm, UpdateUserForm, UpdateProfileForm, ProjectForm, ProjectRoleForm, UpdateProjectForm
 from datetime import datetime
 
 
@@ -28,6 +28,7 @@ def profile(request, id=None):
   
   return render(request, 'LFGCore/profile.html', {
     "user": user, 
+    "memberships" : user.profile.member_set.filter(project__active=True),
     "skillset": user.profile.get_resume(), 
     'logged_in' : request.user.is_authenticated 
   })
@@ -38,7 +39,7 @@ def project(request, id=None):
     return HttpResponseNotFound()
   else:
     project = Project.objects.get(id=id)
-    if project == None:
+    if project == None or not project.active:
       return HttpResponseNotFound(f"<p>Project id {id} does not exist</p>")
 
   role_form = ProjectRoleForm(initial={'project' : project})
@@ -146,14 +147,14 @@ def quit_membership(request, member_id):
 
   if request_membership.is_owner:
     if request_membership == delete_membership:
-      delete_membership.project.delete()
+      delete_membership.project.deactivate()
       return redirect('/')
     else:
-      delete_membership.delete()
+      delete_membership.deactivate()
       return redirect(f'/project/{request_membership.project.id}/')
   
   if request_membership == delete_membership:
-    delete_membership.delete()
+    delete_membership.deactivate()
 
     return redirect('/accounts/profile/')
 
@@ -182,7 +183,7 @@ def project_create(request):
 def update_project(request, id):
   if request.method == 'POST':
     project = Project.objects.get(id=id)
-    project_form = ProjectForm(request.POST, instance=project)
+    project_form = UpdateProjectForm(request.POST, instance=project)
     if project_form.is_valid():
       project_form.save()
       messages.success(request, 'Project was updated successfully.')
@@ -190,7 +191,7 @@ def update_project(request, id):
     else:
       messages.error(request, 'Project was not updated.')
   else:
-    project_form = ProjectForm(instance=request.user)
+    project_form = UpdateProjectForm(instance=request.user)
   return render(request, 'LFGCore/projectUpdate.html', {
     'project_form' : project_form,
   })
@@ -234,6 +235,8 @@ def update_profile(request):
         request.user.first_name = user_form.cleaned_data.get('first_name')
         request.user.last_name = user_form.cleaned_data.get('last_name')
         request.user.email = user_form.cleaned_data.get('email')
+        request.user.bio = profile_form.cleaned_data.get('bio')
+        request.user.telephone_number = profile_form.cleaned_data.get('telephone_number')
         request.user.save()
       messages.success(request, 'Profile was updated successfully.')
       return redirect('/accounts/profile/')
@@ -254,8 +257,8 @@ def search(request):
   query = request.GET.get('query', None)
 
   if query != None and query.strip() != "":
-    search_result_project = Project.objects.filter(name__icontains=query)
-    search_result_user = User.objects.filter(Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query))
+    search_result_project = Project.objects.filter(Q(name__icontains=query) & Q(active=True))
+    search_result_user = User.objects.filter((Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query)) & Q(active=True))
 
     search_result_project = [(proj, proj.applicable_role_list(request.user)) for proj in search_result_project]
 
