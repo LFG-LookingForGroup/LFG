@@ -10,12 +10,32 @@
   <link href="https://fonts.googleapis.com/css?family=Peralta" rel="stylesheet">
   
   {% block header %}{% endblock header %}
+
+  <style>
+
+    footer{
+
+      border: 1px solid gray;
+      height: 50px;
+      width: 100%;
+      margin: auto;
+      position: fixed;
+      margin-top: 10px;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color:slategray;
+      color:midnightblue;
+      text-align: center;
+    }
+
+</style>
 </head>
 
-<body style="width: 90%;margin: auto;">
+<body style="width: 100%;margin: auto;">
   {% block body %}
-  <div class="container">
-  <div class="topnav navbar navbar-expand-lg navbar-dark bg-dark">
+  
+  <div class="topnav navbar navbar-expand-lg navbar-dark bg-dark" style="width: 100%; margin-bottom: 5px;">
     <div class="logo navbar-brand">
     <a href="/"><img src="/static/top/logo.svg" alt="Logo" width="150" height="150" /></a>
   
@@ -26,10 +46,28 @@
     </ul>
 
   </div>
+
+  <div class="container">
   
   {% block content %}{% endblock content %}
-  {% endblock body %}
 </div>
+  <footer>
+    <div class= "navbar navbar-inverse navbar-static-bottom" role="navigation">
+        <div class="navbar-text pull-center">
+        </div>
+        <div class= "navbar-center">
+    
+            <a href="https://github.com/clarkdatalabs">
+                <i class="fa fa-github-square fa-2x"></i></a>
+        </div>
+        
+        <div class="navbar-text pull-center">
+        &copy; LFG 2021
+        </div>
+    </div>	
+    </footer>
+  {% endblock body %}
+
 </body>
 
 
