@@ -21,15 +21,13 @@ def account(request):
 @login_required
 def profile(request, id=None):
   user = None
-  is_own_profile = id == None
-  if is_own_profile:
+  if id == None:
     user = request.user
   else:
     user = User.objects.get(id=id)
   
   return render(request, 'LFGCore/profile.html', {
-    "user": user,
-    "is_own_profile": is_own_profile,
+    "user": user, 
     "memberships" : user.profile.member_set.filter(project__active=True),
     "skillset": user.profile.get_resume(), 
     'logged_in' : request.user.is_authenticated 
@@ -95,7 +93,7 @@ def role_apply(request, id):
     role = Role.objects.get(id=id)
     if request.user.profile.applications.filter(id=id).exists():
       application = request.user.profile.application_set.get(role=role)
-      if application.status in ['R', 'D']:
+      if application.status == 'R':
         application.status = 'A'
         application.save()
         return redirect(request.POST['redirect'])
@@ -260,7 +258,7 @@ def search(request):
 
   if query != None and query.strip() != "":
     search_result_project = Project.objects.filter(Q(name__icontains=query) & Q(active=True))
-    search_result_user = User.objects.filter(Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query))
+    search_result_user = User.objects.filter((Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query)) & Q(active=True))
 
     search_result_project = [(proj, proj.applicable_role_list(request.user)) for proj in search_result_project]
 

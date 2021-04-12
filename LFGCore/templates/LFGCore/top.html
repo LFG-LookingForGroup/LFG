@@ -10,6 +10,63 @@
   <link rel="stylesheet" href="/static/top/top.css">
   {% block header %}{% endblock header %}
 
+  <style>
+
+      footer{
+
+        border: 1px solid gray;
+        height: 150px;
+        width: 90%;
+        margin: auto;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color:slategray;
+        color:midnightblue;
+        text-align: center;
+      }
+
+
+      .container{
+
+        text-align: left;
+        width: 80%;
+        
+        
+        }
+
+        .container input{
+
+          width: 50%;
+          padding: 5px;
+         
+        }
+
+        .container label{
+          width: 20%;
+          opacity: 0.5;
+          text-align: left;
+          margin-left: 0px;
+          
+        }
+
+        button{
+
+          width: 15%;
+          padding: 5px;
+        }
+
+        .form{
+
+          margin-left: 5%;
+        }
+
+
+  
+
+  </style>
+
 </head>
 
 <body>
@@ -49,6 +106,22 @@
   {% block content %}{% endblock content %}
 
 </div>
+
+<footer>
+  <div class= "navbar navbar-inverse navbar-static-bottom" role="navigation">
+      <div class="navbar-text pull-center">
+      </div>
+      <div class= "navbar-center">
+  <!-- Add in your social media / github links here -->
+          <a href="https://github.com/clarkdatalabs">
+              <i class="fa fa-github-square fa-2x"></i></a>
+      </div>
+      <!--Below is the copyright information for the site. You can fill in your own here.-->
+      <div class="navbar-text pull-center">
+      &copy; Digital Projects Studio, 2015
+      </div>
+  </div>	
+  </footer>
   {% endblock body %}
 
 </body>
