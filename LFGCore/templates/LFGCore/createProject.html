@@ -7,7 +7,7 @@
 
 {% block content %}
 <h2>New Project</h2>
-<form method="post">
+<form method="post" class="form">
   {% csrf_token %}
   {% for field in form %}
   <p>
@@ -21,6 +21,7 @@
   {% endfor %}
   </p>
   {% endfor %}
+  
   <button type="submit">Create Project</button>
 </form>
 {% endblock %}
