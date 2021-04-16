@@ -258,7 +258,7 @@ def search(request):
 
   if query != None and query.strip() != "":
     search_result_project = Project.objects.filter(Q(name__icontains=query) & Q(active=True))
-    search_result_user = User.objects.filter((Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query)) & Q(active=True))
+    search_result_user = User.objects.filter((Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query)))
 
     search_result_project = [(proj, proj.applicable_role_list(request.user)) for proj in search_result_project]
 
