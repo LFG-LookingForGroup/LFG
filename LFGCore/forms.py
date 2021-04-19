@@ -13,16 +13,11 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
 
-class UpdateUserForm(UserCreationForm):
-    password1 = forms.CharField(max_length=30, required = False, widget=forms.PasswordInput())
-    password2 = forms.CharField(max_length=30, required = False, widget=forms.PasswordInput())
-
-    def is_valid(self, *args, **kwargs):
-        return super(UpdateUserForm, self).is_valid(*args, **kwargs) # this might seem like it does nothing, but passwords aren't validated properly otherwise
+class UpdateUserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
+        fields = ('username', 'first_name', 'last_name', 'email', )
 
 class UpdateProfileForm(forms.ModelForm):
     bio = forms.CharField(max_length=1000, required=False)

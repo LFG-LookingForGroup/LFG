@@ -1,8 +1,8 @@
 from django.utils import translation
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
@@ -222,32 +222,35 @@ def logout_user(request):
 @transaction.atomic
 def update_profile(request):
   if request.method == 'POST':
-    user_form = UpdateUserForm(request.POST, instance=request.user)
-    profile_form = UpdateProfileForm(request.POST, instance=request.user.profile)
-    if user_form.is_valid() and profile_form.is_valid():
-      profile_form.save()
-      if user_form.cleaned_data.get("password1") != "":
+    if request.POST['update-type'] == 'profile':
+      user_form = UpdateUserForm(request.POST, instance=request.user)
+      profile_form = UpdateProfileForm(request.POST, instance=request.user.profile)
+      if user_form.is_valid() and profile_form.is_valid():
         user_form.save()
-        user = authenticate(username = user_form.cleaned_data.get('username'), password = user_form.cleaned_data.get('password'))
-        login(request, user)
+        profile_form.save()
+        messages.success(request, 'Profile was updated successfully.')
+        return redirect('/accounts/profile/')
       else:
-        request.user.username = user_form.cleaned_data.get('username')
-        request.user.first_name = user_form.cleaned_data.get('first_name')
-        request.user.last_name = user_form.cleaned_data.get('last_name')
-        request.user.email = user_form.cleaned_data.get('email')
-        request.user.bio = profile_form.cleaned_data.get('bio')
-        request.user.telephone_number = profile_form.cleaned_data.get('telephone_number')
-        request.user.save()
-      messages.success(request, 'Profile was updated successfully.')
-      return redirect('/accounts/profile/')
-    else:
-      messages.error(request, 'Profile was not updated.')
+        messages.error(request, 'Profile was not updated.')
+    elif request.POST['update-type'] == 'password':
+      password_form = PasswordChangeForm(request.user, request.POST)
+      if password_form.is_valid():
+        user = password_form.save()
+        update_session_auth_hash(request, user)
+        messages.success(request, 'Password changed successfully.')
+        return redirect('/accounts/profile/')
+      else:
+        messages.error(request, 'Password could not be updated.')
+        user_form = UpdateUserForm(instance=request.user)
+        profile_form = UpdateProfileForm(instance=request.user.profile)
   else:
     user_form = UpdateUserForm(instance=request.user)
     profile_form = UpdateProfileForm(instance=request.user.profile)
+    password_form = PasswordChangeForm(request.user)
   return render(request, 'LFGCore/profileUpdate.html', {
     'user_form' : user_form,
-    'profile_form' : profile_form
+    'profile_form' : profile_form,
+    'password_form': password_form
   })
 
 def search(request):
