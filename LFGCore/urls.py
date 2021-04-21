@@ -21,6 +21,7 @@ from . import views
 urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='LFGCore/login.html')),
     path('logout/', views.logout_user, name = 'logout'),
+    path('about/', views.about, name = 'about'),
     path('accounts/profile/', views.profile, name='my_profile_view'),
     path('accounts/profile/<int:id>/', views.profile, name='profile_view'),
     path('accounts/profile/update/', views.update_profile, name='profile_update'),

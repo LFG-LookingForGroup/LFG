@@ -13,6 +13,8 @@ from LFGCore.models import *
 from LFGCore.forms import SignUpForm, UpdateUserForm, UpdateProfileForm, ProjectForm, ProjectRoleForm, UpdateProjectForm
 from datetime import datetime
 
+def about(request):
+  return render(request, "LFGCore/about.html", {'logged_in' : request.user.is_authenticated})
 
 @login_required
 def account(request):
