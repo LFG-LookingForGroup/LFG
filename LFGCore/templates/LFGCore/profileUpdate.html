@@ -5,10 +5,31 @@
 {% endblock header %}
 
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    {{ user_form.as_p }}
-    {{ profile_form.as_p }}
-    <button type="submit">Save Changes</button>
-</form>
+<div style="display: flex; flex-flow: row;">
+    <div>
+        <h2>Change Profile Information:</h2>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="update-type" value="profile">
+            <hr>
+            {{ user_form.as_p }}
+            <hr>
+            {{ profile_form.as_p }}
+            <hr>
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+    <div>
+        <h2>Change Password:</h2>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="update-type" value="password">
+            <hr>
+            {{ password_form.as_p }}
+            <hr>
+            <button type="submit">Change Password</button>
+        </form>
+    </div>
+</div>
+
 {% endblock content %}
