@@ -16,15 +16,22 @@
   }
 
   #searchBarWrap {
-    display: flex;
-    justify-content: center;
+    background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0, 0.4); /* Black w/opacity/see-through */
+  color: white;
+  font-weight: bold;
+  border: 3px solid #f1f1f1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  padding: 20px;
+  text-align: center;
+  width: 50%;
   }
 
-  #searchBarWrap {
-    display: flex;
-    justify-content: center;
-  }
-
+  
 
   #searchBar {
     border: #BA4A00 solid;
@@ -48,20 +55,21 @@
   .hero {
 
     
-    background-image: url('/static/top/logo.svg');
-    opacity: 0.5;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: 100% 100%;
-    text-align: left;
-}
+  background-image: url('/static/top/logo.svg');
+     /* Add the blur effect */
+  filter: blur(5px);
+  -webkit-filter: blur(8px);
+  
+  /* Full height */
+  height: 50%; 
+  
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 500px;
+  }
 
-.hero{
 
-  opacity: 0.5;
-  text-align: left;
-
-}
 
 input{
 
@@ -77,7 +85,7 @@ input{
 </style>
 
 
-<div class="hero" style="height: 600px;">
+<div class="hero" style="height: 400px;"></div>
 <h1 style="text-align: center;">Welcome to LFG!</h1>
 
 
@@ -93,5 +101,5 @@ input{
     <button style="margin-top: 10px;" type="submit">Search</i></button>
   </form>
 </div>
-</div>
+
 {% endblock content %}

@@ -1,35 +1,173 @@
 {% extends "LFGCore/top.html" %}
-
+{% load widget_tweaks %}
 {% block header %}
 <title>Update Profile</title>
 {% endblock header %}
 
+
+
 {% block content %}
-<div style="display: flex; flex-flow: row;">
-    <div>
-        <h2>Change Profile Information:</h2>
-        <form method="post">
+
+
+<style>
+
+    .container{
+    
+            
+            width: 95%;
+            margin: auto;
+            height: 870px;
+            
+    
+       }
+    
+        .card{
+    
+                
+                width: 45%;
+                border: 1px solid gray;
+                margin-left: 5px;
+                
+        }
+    
+        footer{
+    
+            height: auto;
+        }
+
+        form p{
+
+            width: 100%;
+           
+        }
+
+       p label{
+
+            
+            width: 100%;
+        }
+
+    
+
+    .card-title{
+
+        padding: 5px;
+        text-align: center;
+    }
+
+    </style>
+
+
+<div class="row">
+    <div class="card">
+
+        <h2 class="card-title">Change Profile Information</h2>
+
+        <div class="card-body">
+        <form method="post" >
             {% csrf_token %}
+
+            {{ user_form.non_field_errors }}
+
+            {% for hidden_field in user_form.hidden_fields %}
+                {{ hidden_field }}
+            {% endfor %}
+
+
             <input type="hidden" name="update-type" value="profile">
             <hr>
-            {{ user_form.as_p }}
+
+
+            {% if user_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                {% for error in user_form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+                </div>
+            {% endif %}
+
+
+            {% for field in user_form.visible_fields %}
+                <div class="form-group">
+                {{ field.label_tag }}
+
+                {% if user_form.is_bound %}
+                    {% if field.errors %}
+                    {% render_field field class="form-control is-invalid" %}
+                    {% for error in field.errors %}
+                        <div class="invalid-feedback">
+                        {{ error }}
+                        </div>
+                    {% endfor %}
+                    {% else %}
+                    {% render_field field class="form-control is-valid" %}
+                    {% endif %}
+                {% else %}
+                    {% render_field field class="form-control" %}
+                {% endif %}
+
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                </div>
+            {% endfor %}
+           
+            
             <hr>
-            {{ profile_form.as_p }}
+
+            {% for field in profile_form.visible_fields %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {% render_field field class="form-control" %}
+                {% if field.help_text %}
+                  <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+            
             <hr>
-            <button type="submit">Save Changes</button>
+            <button type="submit" class="btn btn-primary" style="width: 50%;">Save Changes</button>
         </form>
+      </div>
     </div>
-    <div>
-        <h2>Change Password:</h2>
+    <div class="card" style="margin-left: 5%;">
+        <h2 class="card-title">Change Password:</h2>
+
+        <div class="card-body">
         <form method="post">
             {% csrf_token %}
+
+           
+
             <input type="hidden" name="update-type" value="password">
             <hr>
-            {{ password_form.as_p }}
+            {{ form.non_field_errors }}
+
+
+            {% if password_form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+            {% for error in password_form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+            </div>
+           {% endif %}
+
+            {% for field in password_form.visible_fields %}
+            <div class="form-group">
+            {{ field.label_tag }}
+            {% render_field field class="form-control" %}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+            </div>
+        {% endfor %}
+
             <hr>
-            <button type="submit">Change Password</button>
+            <button type="submit" class="btn btn-primary" style="width: 50%;">Change Password</button>
         </form>
     </div>
+</div>
 </div>
 
 {% endblock content %}
