@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html>
+  {% load widget_tweaks %}
+  {% load bootstrap4 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript jquery='full' %}
+  {% block styles %}{% endblock styles %}
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/top/top.css">
+  {% block header %}{% endblock header %}
+
+  <style>
+
+    footer{
+      border: 1px solid gray;
+      margin-top: 5px;
+      height: 150px;
+      width: 90%;
+      margin: auto;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color:slategray;
+      color:midnightblue;
+      text-align: center;
+    }
+
+    .container {
+      text-align: left;
+      width: 80%;
+    }
+
+    .container input {
+      width: 50%;
+      padding: 5px;
+      
+    }
+
+    .container label {
+      width: 20%;
+      opacity: 0.5;
+      text-align: left;
+      margin-left: 0px;
+      
+    }
+
+    button {
+      width: 15%;
+      padding: 5px;
+    }
+
+    .form {
+      margin-left: 5%;
+    }
+
+  </style>
+
+</head>
+
+<body style="width: 100%; margin-bottom: 75px;"">
+{% block body %}
+  
+
+  <div class="topnav navbar navbar-expand-lg navbar-dark bg-dark" style="width: 100%; margin-bottom: 5px;">
+
+    <div class="logo" style="width: 5%;">
+      <a href="/">
+        <img src="/static/top/logo.svg" alt="Logo" width="100%" height="auto" />
+      </a>
+    </div>
+
+    <form class="input-group" action="/search/" style="margin-left: 5px; width: 20%;">
+      <div style="width: 100%;">
+      <input class="form-control border-end-0 border rounded-pill" type="text" placeholder="Search" name="query"
+      style="width: 90%;background-color: darkslateblue;">
+     </div>
+    </form>
+
+    {% include logged_in|yesno:"LFGCore/userTop.html,LFGCore/anonymousTop.html" %}
+
+    <div class="" style="margin-left: 100px;width: 50px;background-color: aliceblue; border-radius: 50px; border:1px solid aliceblue;height: 50px;">
+
+      
+    </div>
+  </div>
+
+  <div class="container">
+  {% block content %}{% endblock content %}
+
+</div>
+
+<footer style="height: auto;margin-top: 5px;">
+  <div class= "navbar" role="navigation">
+      <div class="navbar-text pull-center">
+      </div>
+      <div class= "navbar-center">
+  
+          <a href="">
+              <i class="fa fa-github-square fa-2x"></i></a>
+      </div>
+      
+      <div class="navbar-text pull-center">
+      &copy; LFG 2021
+      </div>
+  </div>	
+  </footer>
+  {% endblock body %}
+
+</body>
+
+</html>

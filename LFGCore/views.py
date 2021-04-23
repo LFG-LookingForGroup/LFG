@@ -18,7 +18,7 @@ def about(request):
 
 @login_required
 def account(request):
-  return render(request, "LFGCore/account.html")
+  return render(request, "LFGCore/account.html", {'logged_in' : request.user.is_authenticated})
 
 @login_required
 def profile(request, id=None):
@@ -60,7 +60,8 @@ def project(request, id=None):
     "is_owner" : is_owner,
     "project" : project, 
     "role_list" : role_list,
-    "role_form" : role_form 
+    "role_form" : role_form,
+    'logged_in' : request.user.is_authenticated
   })
 
 @login_required
@@ -196,6 +197,7 @@ def update_project(request, id):
     project_form = UpdateProjectForm(instance=project)
   return render(request, 'LFGCore/projectUpdate.html', {
     'project_form' : project_form,
+    'logged_in' : request.user.is_authenticated
   })
 
 def signup(request):
@@ -252,7 +254,8 @@ def update_profile(request):
   return render(request, 'LFGCore/profileUpdate.html', {
     'user_form' : user_form,
     'profile_form' : profile_form,
-    'password_form': password_form
+    'password_form': password_form,
+    'logged_in' : request.user.is_authenticated
   })
 
 def search(request):
@@ -282,11 +285,12 @@ def index(request):
     'logged_in' : request.user.is_authenticated 
   })
 
-@login_required
-@transaction.atomic
-def apply(request):
+# @login_required
+# @transaction.atomic
+# def apply(request):
   
-  return render(request, 'LFGCore/project.html', {
-    "project" : project 
-  })
+#   return render(request, 'LFGCore/project.html', {
+#     "project" : project,
+#     'logged_in' : request.user.is_authenticated
+#   })
 
