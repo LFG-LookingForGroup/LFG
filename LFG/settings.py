@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'LFGCore.apps.LfgcoreConfig',
     'bootstrap4',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
