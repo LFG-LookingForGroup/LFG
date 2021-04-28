@@ -29,7 +29,7 @@ def profile(request, id=None):
     user = User.objects.get(id=id)
   
   return render(request, 'LFGCore/profile.html', {
-    "user": user, 
+    "user": user,
     "memberships" : user.profile.member_set.filter(project__active=True),
     "skillset": user.profile.get_resume(), 
     'logged_in' : request.user.is_authenticated 
