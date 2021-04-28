@@ -10,14 +10,15 @@
 <div class="card">
   <img src="image_defaultProfile.jpg" alt="Username" style="width:100%">
   <h2>Username: {{ user.username }}</h2>
-  <h3>Name: {{ user.first_name }} {{ user.last_name }} Email: {{ user.email }}</h3>
+  <h3>Name: {{ user.first_name }} {{ user.last_name }}</h3>
+  <h3>Email: {{ user.email }}</h3>
 
   <h3>Bio:</h3>
   <p>
     {{ user.profile.bio }}
   </p>
 
-  <p>Phone: {{ user.profile.telephone_number }}</p>
+  <h3>Phone: {{ user.profile.telephone_number }}</h3>
 
   <h2>Projects:</h2>
 
