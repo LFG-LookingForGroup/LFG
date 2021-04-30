@@ -5,7 +5,6 @@ from datetime import datetime
 
 class AnonymousAccess(TestCase):
     def setUp(self):
-        print("anonymous access tests")
         User.objects.create(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
         Project.objects.create(name = "test project", description = "this is a test project")
 
@@ -27,18 +26,19 @@ class AnonymousAccess(TestCase):
     def test_profile_access(self):
         testuser = User.objects.get(username="test_user")
         c = Client()
-        resp = c.get(f"/accounts/profile/{testuser.id}")
-        self.assertRedirects(resp, "/login/")
+        url = f"/accounts/profile/{testuser.id}/"
+        resp = c.get(url, follow=True)
+        self.assertRedirects(resp, f"/login/?next={url}")
 
     def test_project_access(self):
         testproject = Project.objects.get(name="test project")
         c = Client()
-        resp = c.get(f"/project/{testproject.id}")
-        self.assertRedirects(resp, "/login/")
+        url = f"/project/{testproject.id}/"
+        resp = c.get(url, follow=True)
+        self.assertRedirects(resp, f"/login/?next={url}")
 
 class UserAccess(TestCase):
     def setUp(self):
-        print("user access tests")
         testuser = User.objects.create(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
         testproject = Project.objects.create(name = "test project", description = "this is a test project")
         testuser.profile.projects.add(testproject, through_defaults={"is_owner": True, "start_date" : datetime.now(timezone.utc)})
