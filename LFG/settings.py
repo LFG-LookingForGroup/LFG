@@ -125,4 +125,4 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
 
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/login/'
+# LOGIN_REDIRECT_URL = '/login/'

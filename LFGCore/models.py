@@ -90,6 +90,12 @@ class Project(models.Model):
         app.delete()
     self.save()
 
+  def set_creator(self, creator):
+    new_role = Role.objects.create(project=self, title="Creator", description="Creator of the project.")
+    creator.profile.projects.add(self, through_defaults={"is_owner": True, "start_date": datetime.now(timezone.utc)})
+    membership = creator.profile.member_set.get(project=self)
+    membership.roles.add(new_role)
+
 class Member(models.Model):
   profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
   project = models.ForeignKey(Project, on_delete=models.CASCADE)

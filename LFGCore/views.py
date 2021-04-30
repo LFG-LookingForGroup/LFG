@@ -169,10 +169,7 @@ def project_create(request):
     form = ProjectForm(request.POST)
     if form.is_valid():
       new_project = form.save()
-      new_role = Role.objects.create(project=new_project, title="Creator", description="Creator of the project.")
-      request.user.profile.projects.add(new_project, through_defaults={"is_owner": True, "start_date": datetime.now(timezone.utc)})
-      membership = request.user.profile.member_set.get(project=new_project)
-      membership.roles.add(new_role)
+      new_project.set_creator(request.user)
       return redirect(f'/project/{new_project.id}')
   else:
     form = ProjectForm()

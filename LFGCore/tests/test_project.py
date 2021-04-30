@@ -20,4 +20,13 @@ class ProjectTestCase(TestCase):
         
         test_project_object = Project.objects.get(name = 'test_project')
         self.assertEqual(test_project_object.name, 'edited_test_project')        
-        self.assertEqual(test_project_object.description, 'edited this is a testing project')        
+        self.assertEqual(test_project_object.description, 'edited this is a testing project')
+
+
+# https://github.com/LFG-LookingForGroup/LFG/issues/2
+class ApplyForRoleAsCreator(TestCase):
+    def setUp(self):
+        testuser = User.objects.create(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
+        testproject = Project.objects.create(name= 'test_project', description='this is a testing project')
+        new_role = Role.objects.create(project=testproject, title="Creator", description="Creator of the project.")
+        
