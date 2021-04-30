@@ -25,7 +25,7 @@ class ProjectTestCase(TestCase):
 
 
 # https://github.com/LFG-LookingForGroup/LFG/issues/2
-class ApplyForRoleAsCreator(TestCase):
+class ApplyForCreatorRoleAsCreator(TestCase):
     def setUp(self):
         testcreator = User.objects.create(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
         testproject = Project.objects.create(name = 'test_project', description='this is a testing project')
