@@ -3,6 +3,7 @@ from LFGCore.models import *
 from django.contrib.auth.models import User
 from bs4 import BeautifulSoup
 from http import HTTPStatus
+from datetime import timedelta
 
 # https://github.com/LFG-LookingForGroup/LFG/issues/1
 # https://github.com/LFG-LookingForGroup/LFG/issues/13
@@ -60,7 +61,7 @@ class ReapplyAfterDecline(TestCase):
         self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
         self.project = Project.objects.create(name = 'test_project', description='this is a testing project')
         self.project.set_creator(self.creator)
-        self.creator_role = self.creator.profile.member_set.get(project__name = 'test_project').roles.get(title = "Creator")
+        self.creator_role = self.creator.profile.member_set.get(project = self.project).roles.get(title = "Creator")
         self.skill = Skill.objects.create(name = "test_skill", description = "this is a test skill")
         self.role = Role.objects.create(title = "test_role", description = "test role description", project = self.project)
         self.role.skills.add(self.skill)
@@ -91,6 +92,58 @@ class ReapplyAfterDecline(TestCase):
         content = BeautifulSoup(resp.content, 'html.parser')
         self.assertNotEquals(content.select(f"form[action='/role/apply/{self.role.id}/']"), [])
 
+# https://github.com/LFG-LookingForGroup/LFG/issues/4
+class MaintainSkillAfterQuit(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
+        self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
+        self.project = Project.objects.create(name = 'test_project', description='this is a testing project')
+        self.project.set_creator(self.creator)
+        self.creator_role = self.creator.profile.member_set.get(project = self.project).roles.get(title = "Creator")
+        self.skill = Skill.objects.create(name = "test_skill", description = "this is a test skill")
+        self.role = Role.objects.create(title = "test_role", description = "test role description", project = self.project)
+        self.role.skills.add(self.skill)
 
+    def test(self):
+        user_client = Client()
+        user_client.login(username = "test_user", password = "abc123")
 
+        creator_client = Client()
+        creator_client.login(username = 'test_creator', password = 'abc123')
 
+        # apply for role
+        user_client.post(f"/role/apply/{self.role.id}/", {"redirect" : f"/project/{self.project.id}/"}, follow=True)
+        application = self.user.profile.application_set.filter(role = self.role, status='A')
+        self.assertTrue(application.exists())
+        application = application.first()
+
+        # present offer
+        creator_client.post(f"/application/updatestatus/{application.id}/", {"newstatus" : "O"}, follow=True)
+        self.assertEquals(self.user.profile.application_set.get(role = self.role).status, "O")
+
+        # accept offer
+        user_client.post(f"/project/acceptoffer/{application.id}/", follow=True)
+        membership = self.user.profile.member_set.filter(project = self.project)
+        self.assertTrue(membership.exists())
+        membership = membership.first()
+        self.assertTrue(membership.active)
+
+        # set experience to be 1 hour
+        membership.start_date -= timedelta(hours=1)
+        membership.save()
+        
+        # check that experience is recorded
+        resume = self.user.profile.get_resume()
+        self.assertGreater(len(resume), 0)
+        self.assertEqual(resume[0][0], self.skill)
+        self.assertGreaterEqual(resume[0][1], 1)
+
+        # quit position
+        user_client.post(f"/membership/quit/{membership.id}/", follow=True)
+        self.assertFalse(self.user.profile.member_set.get(project = self.project).active)
+
+        # check that experience remains recorded
+        resume = self.user.profile.get_resume()
+        self.assertGreater(len(resume), 0)
+        self.assertEqual(resume[0][0], self.skill)
+        self.assertGreaterEqual(resume[0][1], 1)
