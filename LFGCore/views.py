@@ -30,6 +30,7 @@ def profile(request, id=None):
   
   return render(request, 'LFGCore/profile.html', {
     "user": user,
+    "is_own_profile": user == request.user,
     "memberships" : user.profile.member_set.filter(project__active=True),
     "skillset": user.profile.get_resume(), 
     'logged_in' : request.user.is_authenticated 
