@@ -3,6 +3,14 @@ from LFGCore.models import *
 from django.contrib.auth.models import User
 from datetime import datetime
 
+class ProfileCreation(TestCase):
+    def setUp(self):
+        testuser = User.objects.create(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
+        
+    def test_profile_creation(self):
+        testuser = User.objects.get(username = 'test_user')
+        self.assertNotEquals(testuser.profile, None)
+        
 class AnonymousAccess(TestCase):
     def setUp(self):
         User.objects.create(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
