@@ -33,23 +33,64 @@ class ProjectTestCases(TestCase):
 # https://github.com/LFG-LookingForGroup/LFG/issues/2
 class ApplyForCreatorRoleAsCreator(TestCase):
     def setUp(self):
-        self.testuser = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
-        self.testcreator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
-        self.testproject = Project.objects.create(name = 'test_project', description='this is a testing project')
-        self.testproject.set_creator(self.testcreator)
-        self.creator_role = self.testcreator.profile.member_set.get(project__name = 'test_project').roles.get(title = "Creator")
+        self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
+        self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
+        self.project = Project.objects.create(name = 'test_project', description='this is a testing project')
+        self.project.set_creator(self.creator)
+        self.creator_role = self.creator.profile.member_set.get(project__name = 'test_project').roles.get(title = "Creator")
     
     def test_present_as_user(self):
         c = Client()
         c.login(username = 'test_user', password = "abc123")
-        resp = c.get(f"/project/{self.testproject.id}/", follow=True)
+        resp = c.get(f"/project/{self.project.id}/", follow=True)
         content = BeautifulSoup(resp.content, 'html.parser')
         self.assertNotEquals(content.select(f"form[action='/role/apply/{self.creator_role.id}/']"), [])
 
     def test_not_present_as_creator(self):
         c = Client()
         c.login(username = 'test_creator', password = "abc123")
-        resp = c.get(f"/project/{self.testproject.id}/", follow=True)
+        resp = c.get(f"/project/{self.project.id}/", follow=True)
         content = BeautifulSoup(resp.content, 'html.parser')
         self.assertEquals(content.select(f"form[action='/role/apply/{self.creator_role.id}/']"), [])
+
+# https://github.com/LFG-LookingForGroup/LFG/issues/3
+class ReapplyAfterDecline(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
+        self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
+        self.project = Project.objects.create(name = 'test_project', description='this is a testing project')
+        self.project.set_creator(self.creator)
+        self.creator_role = self.creator.profile.member_set.get(project__name = 'test_project').roles.get(title = "Creator")
+        self.skill = Skill.objects.create(name = "test_skill", description = "this is a test skill")
+        self.role = Role.objects.create(title = "test_role", description = "test role description", project = self.project)
+        self.role.skills.add(self.skill)
+
+    def test(self):
+        user_client = Client()
+        user_client.login(username = 'test_user', password = 'abc123')
+
+        creator_client = Client()
+        creator_client.login(username = 'test_creator', password = 'abc123')
+
+        # apply for role
+        user_client.post(f"/role/apply/{self.role.id}/", {"redirect" : f"/project/{self.project.id}/"}, follow=True)
+        application = self.user.profile.application_set.filter(role = self.role, status='A')
+        self.assertTrue(application.exists())
+        application = application.first()
+
+        # present offer
+        creator_client.post(f"/application/updatestatus/{application.id}/", {"newstatus" : "O"}, follow=True)
+        self.assertEquals(self.user.profile.application_set.get(role = self.role).status, "O")
+
+        # decline offer
+        user_client.post(f"/application/updatestatus/{application.id}/", {"newstatus" : "D"}, follow=True)
+        self.assertEquals(self.user.profile.application_set.get(role = self.role).status, "D")
+
+        # check if role is applicable
+        resp = user_client.get(f"/project/{self.project.id}/", follow=True)
+        content = BeautifulSoup(resp.content, 'html.parser')
+        self.assertNotEquals(content.select(f"form[action='/role/apply/{self.role.id}/']"), [])
+
+
+
 
