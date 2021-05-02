@@ -70,3 +70,27 @@ class ProfileUpdateRequiredFields(TestCase):
         self.assertTrue(content.select_one("#id_first_name").has_attr("required"))
         self.assertTrue(content.select_one("#id_last_name").has_attr("required"))
         self.assertTrue(content.select_one("#id_email").has_attr("required"))
+
+# https://github.com/LFG-LookingForGroup/LFG/issues/21
+class LeaveProjectButtonOnOtherProfile(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
+        self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
+        self.project = Project.objects.create(name = 'test_project', description = 'this is a testing project')
+        self.creator_membership = self.project.set_creator(self.creator)
+
+    def test_appears_on_own_profile(self):
+        client = Client()
+        client.login(username = self.creator.username, password = 'abc123')
+
+        resp = client.get(f"/accounts/profile/{self.creator.id}/", follow = True)
+        content = BeautifulSoup(resp.content, 'html.parser')
+        self.assertNotEqual(content.select(f"form[action='/membership/quit/{self.creator_membership.id}/']"), [])
+
+    def test_doesnt_appear_on_other_profile(self):
+        client = Client()
+        client.login(username = self.user.username, password = 'abc123')
+
+        resp = client.get(f"/accounts/profile/{self.creator.id}/", follow = True)
+        content = BeautifulSoup(resp.content, 'html.parser')
+        self.assertEqual(content.select(f"form[action='/membership/quit/{self.creator_membership.id}/']"), [])
