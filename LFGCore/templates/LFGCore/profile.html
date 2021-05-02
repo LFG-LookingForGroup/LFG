@@ -29,10 +29,12 @@
         {% if member.roles.all %}
         , {{ member.roles.all.0.title }}
         {% endif %}
+        {% if is_own_profile %}
         <form action="/membership/quit/{{ member.id }}/" method="post">
           {% csrf_token %}
           <button type="submit">Leave Project</button>
         </form>
+        {% endif %}
       </li>
       {% endfor %}
   </ul>
