@@ -192,12 +192,34 @@ class KickMemberVisibility(TestCase):
         creator_client = Client()
         creator_client.login(username = self.creator.username, password = 'abc123')
 
-        # kick member is visible for project owner
+        # kick member is visible for project creator
         resp = creator_client.get(f"/project/{self.project.id}/", follow = True)
         content = BeautifulSoup(resp.content, 'html.parser')
         self.assertNotEquals(content.select(f"form[action='/membership/quit/{self.user_membership.id}/']"), [])
 
-        # kick member not visible for project member
+        # kick creator not visible for project member
         resp = user_client.get(f"/project/{self.project.id}/", follow = True)
         content = BeautifulSoup(resp.content, 'html.parser')
         self.assertEquals(content.select(f"form[action='/membership/quit/{self.creator_membership.id}/']"), [])
+
+# https://github.com/LFG-LookingForGroup/LFG/issues/8
+class BlankProjectUpdate(TestCase):
+    def setUp(self):
+        self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
+        self.project = Project.objects.create(name = 'test_project', description = 'this is a testing project')
+        self.creator_membership = self.project.set_creator(self.creator)
+
+    def test(self):
+        client = Client()
+        client.login(username = self.creator.username, password = 'abc123')
+
+        resp = client.get(f"/project/update/{self.project.id}/", follow = True)
+        self.assertEquals(resp.status_code, 200)
+        content = BeautifulSoup(resp.content, 'html.parser')
+
+        # check that fields are properly filled
+        self.assertEquals(content.select_one("#id_name")["value"], self.project.name)
+        self.assertEquals(content.select_one("#id_description")["value"], self.project.description)
+
+        # check that name field is required
+        self.assertTrue(content.select_one("#id_name")["required"] is not None)
