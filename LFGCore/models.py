@@ -57,6 +57,13 @@ class Friend(models.Model):
   request_status = models.CharField(max_length=2, choices=[('RQ', 'Requested'), ('AC', 'Accepted'), ('RJ', 'Rejected')])
 
 # Project Membership & Role Schema
+class ProjectManager(models.Manager):
+  def create_project(self, creator, *args, **kwargs):
+    project = self.create(*args, **kwargs)
+    creator_role = Role.objects.create(project=project, title="Creator", description="Creator of the project.")
+    project.add_member(creator, [creator_role], through_defaults = {"is_owner": True})
+    return project
+
 class Project(models.Model):
   channels = models.ManyToManyField('ChatChannel', through='ProjectChannel')
   name = models.CharField(max_length=45)
@@ -64,6 +71,8 @@ class Project(models.Model):
   start_date = models.DateTimeField(default=now)
   end_date = models.DateTimeField(null=True)
   active = models.BooleanField(default=True)
+
+  objects = ProjectManager()
 
   def applicable_role_list(self, user):
     roles = []
@@ -93,11 +102,13 @@ class Project(models.Model):
         app.delete()
     self.save()
 
-  def set_creator(self, creator):
-    new_role = Role.objects.create(project=self, title="Creator", description="Creator of the project.")
-    creator.profile.projects.add(self, through_defaults={"is_owner": True, "start_date": datetime.now(timezone.utc)})
-    membership = creator.profile.member_set.get(project=self)
-    membership.roles.add(new_role)
+  def add_member(self, user, roles = [], through_defaults = {}):
+    through_defaults.setdefault("is_owner", False)
+    through_defaults.setdefault("start_date", datetime.now(timezone.utc))
+    user.profile.projects.add(self, through_defaults = through_defaults)
+    membership = Member.objects.get(project=self, profile=user.profile)
+    for role in roles:
+      membership.roles.add(role)
     return membership
 
 class Member(models.Model):
@@ -147,9 +158,7 @@ class Application(models.Model):
   ))
 
   def graduate_to_membership(self):
-    self.applicant.projects.add(self.role.project, through_defaults={ "is_owner": False, "start_date": datetime.now(timezone.utc) })
-    membership = Member.objects.get(project=self.role.project, profile=self.applicant)
-    membership.roles.add(self.role)
+    membership = self.role.project.add_member(self.applicant.user, [self.role])
     self.delete()
     return membership
 

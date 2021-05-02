@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from bs4 import BeautifulSoup
 from http import HTTPStatus
 from datetime import timedelta
+from time import sleep
 
 # https://github.com/LFG-LookingForGroup/LFG/issues/1
 # https://github.com/LFG-LookingForGroup/LFG/issues/13
@@ -12,8 +13,7 @@ class ProjectTestCases(TestCase):
         #Create User
         self.user = User.objects.create(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
         #Create project
-        test_project = Project.objects.create(name= 'test_project', description = 'this is a testing project')
-        test_project.set_creator(self.user)
+        self.project = Project.objects.create_project(self.user, name = 'test_project', description = 'this is a testing project')
     
     def test_update_project(self):
         c = Client()
@@ -35,9 +35,9 @@ class ApplyForCreatorRoleAsCreator(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
         self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
-        self.project = Project.objects.create(name = 'test_project', description = 'this is a testing project')
-        self.project.set_creator(self.creator)
-        self.creator_role = self.creator.profile.member_set.get(project__name = 'test_project').roles.get(title = "Creator")
+        self.project = Project.objects.create_project(self.creator, name = 'test_project', description = 'this is a testing project')
+        self.creator_membership = self.creator.profile.member_set.get(project = self.project)
+        self.creator_role = self.creator_membership.roles.get(title = "Creator")
     
     def test_present_as_user(self):
         c = Client()
@@ -58,9 +58,7 @@ class ReapplyAfterDecline(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
         self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
-        self.project = Project.objects.create(name = 'test_project', description = 'this is a testing project')
-        self.project.set_creator(self.creator)
-        self.creator_role = self.creator.profile.member_set.get(project = self.project).roles.get(title = "Creator")
+        self.project = Project.objects.create_project(self.creator, name = 'test_project', description = 'this is a testing project')
         self.skill = Skill.objects.create(name = "test_skill", description = "this is a test skill")
         self.role = Role.objects.create(title = "test_role", description = "test role description", project = self.project)
         self.role.skills.add(self.skill)
@@ -96,12 +94,11 @@ class MaintainSkillAfterQuit(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
         self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
-        self.project = Project.objects.create(name = 'test_project', description = 'this is a testing project')
-        self.project.set_creator(self.creator)
-        self.creator_role = self.creator.profile.member_set.get(project = self.project).roles.get(title = "Creator")
+        self.project = Project.objects.create_project(self.creator, name = 'test_project', description = 'this is a testing project')
         self.skill = Skill.objects.create(name = "test_skill", description = "this is a test skill")
         self.role = Role.objects.create(title = "test_role", description = "test role description", project = self.project)
         self.role.skills.add(self.skill)
+        self.user_membership = self.project.add_member(self.user, [self.role])
 
     def test(self):
         user_client = Client()
@@ -110,26 +107,9 @@ class MaintainSkillAfterQuit(TestCase):
         creator_client = Client()
         creator_client.login(username = 'test_creator', password = 'abc123')
 
-        # apply for role
-        user_client.post(f"/role/apply/{self.role.id}/", {"redirect" : f"/project/{self.project.id}/"}, follow = True)
-        application = self.user.profile.application_set.filter(role = self.role, status = 'A')
-        self.assertTrue(application.exists())
-        application = application.first()
-
-        # present offer
-        creator_client.post(f"/application/updatestatus/{application.id}/", {"newstatus" : "O"}, follow = True)
-        self.assertEquals(self.user.profile.application_set.get(role = self.role).status, "O")
-
-        # accept offer
-        user_client.post(f"/project/acceptoffer/{application.id}/", follow = True)
-        membership = self.user.profile.member_set.filter(project = self.project)
-        self.assertTrue(membership.exists())
-        membership = membership.first()
-        self.assertTrue(membership.active)
-
         # set experience to be 1 hour
-        membership.start_date -= timedelta(hours = 1)
-        membership.save()
+        self.user_membership.start_date -= timedelta(hours = 1)
+        self.user_membership.save()
         
         # check that experience is recorded
         resume = self.user.profile.get_resume()
@@ -138,7 +118,7 @@ class MaintainSkillAfterQuit(TestCase):
         self.assertGreaterEqual(resume[0][1], 1)
 
         # quit position
-        user_client.post(f"/membership/quit/{membership.id}/", follow = True)
+        user_client.post(f"/membership/quit/{self.user_membership.id}/", follow = True)
         self.assertFalse(self.user.profile.member_set.get(project = self.project).active)
 
         # check that experience remains recorded
@@ -152,14 +132,12 @@ class KickMemberVisibility(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
         self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
-        self.project = Project.objects.create(name = 'test_project', description = 'this is a testing project')
-        self.creator_membership = self.project.set_creator(self.creator)
-        self.creator_role = self.creator.profile.member_set.get(project = self.project).roles.get(title = "Creator")
+        self.project = Project.objects.create_project(self.creator, name = 'test_project', description = 'this is a testing project')
+        self.creator_membership = self.creator.profile.member_set.get(project = self.project)
         self.skill = Skill.objects.create(name = "test_skill", description = "this is a test skill")
         self.role = Role.objects.create(title = "test_role", description = "test role description", project = self.project)
         self.role.skills.add(self.skill)
-        application = self.role.apply(self.user)
-        self.user_membership = application.graduate_to_membership()
+        self.user_membership = self.project.add_member(self.user, [self.role])
 
     def test_visible_for_creator(self):
         client = Client()
@@ -178,11 +156,10 @@ class KickMemberVisibility(TestCase):
         self.assertEquals(content.select(f"form[action='/membership/quit/{self.creator_membership.id}/']"), [])
 
 # https://github.com/LFG-LookingForGroup/LFG/issues/8
-class BlankProjectUpdate(TestCase):
+class ProjectUpdateRequiredFields(TestCase):
     def setUp(self):
         self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
-        self.project = Project.objects.create(name = 'test_project', description = 'this is a testing project')
-        self.creator_membership = self.project.set_creator(self.creator)
+        self.project = Project.objects.create_project(self.creator, name = 'test_project', description = 'this is a testing project')
 
     def test(self):
         client = Client()
@@ -199,3 +176,81 @@ class BlankProjectUpdate(TestCase):
         # check that name field is required
         self.assertTrue(content.select_one("#id_name").has_attr("required"))
 
+# https://github.com/LFG-LookingForGroup/LFG/issues/19
+class SkillAccumulationIndependentPerRole(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
+        self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
+        self.project = Project.objects.create_project(self.creator, name = 'test_project', description = 'this is a testing project')
+        self.skill1 = Skill.objects.create(name = "test_skill", description = "this is a test skill")
+        self.skill2 = Skill.objects.create(name = "test_skill_2", description = "this is another test skill")
+        self.role1 = Role.objects.create(title = "test_role", description = "test role description", project = self.project)
+        self.role1.skills.add(self.skill1)
+        self.role2 = Role.objects.create(title = "test_role_2", description = "other role description", project = self.project)
+        self.role2.skills.add(self.skill2)
+
+    def test(self):
+
+        # apply for first role
+        application = self.role1.apply(self.user)
+        self.user_membership = application.graduate_to_membership()
+
+        # wait a bit
+        sleep(0.5)
+        
+        # verify experience is recorded
+        resume = self.user.profile.get_resume()
+        self.assertNotEqual(resume, [])
+        self.assertEqual(resume[0][0], self.skill1)
+        self.assertGreater(resume[0][1], 0)
+
+        # wait a bit more
+        sleep(0.5)
+
+        # add additional role
+        application = self.role2.apply(self.user)
+        self.user_membership = application.graduate_to_membership()
+
+        # verify experience is not the same between roles
+        resume = self.user.profile.get_resume()
+        self.assertNotEqual(resume, [])
+        self.assertEquals(resume[0][0], self.skill1)
+        self.assertEquals(resume[1][0], self.skill2)
+        self.assertGreater(resume[0][1], resume[1][1])
+
+# https://github.com/LFG-LookingForGroup/LFG/issues/20
+class MaintainSkillAfterRoleDeletion(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
+        self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
+        self.project = Project.objects.create_project(self.creator, name = 'test_project', description = 'this is a testing project')
+        self.skill = Skill.objects.create(name = "test_skill", description = "this is a test skill")
+        self.role = Role.objects.create(title = "test_role", description = "test role description", project = self.project)
+        self.role.skills.add(self.skill)
+        self.user_membership = self.project.add_member(self.user, [self.role])
+
+    def test(self):
+        client = Client()
+        client.login(username = self.creator.username, password = 'abc123')
+
+        # apply for role
+        application = self.role.apply(self.user)
+        self.user_membership = application.graduate_to_membership()
+
+        # wait a bit
+        sleep(0.5)
+        
+        # verify experience is recorded
+        resume = self.user.profile.get_resume()
+        self.assertNotEqual(resume, [])
+        self.assertEqual(resume[0][0], self.skill)
+        self.assertGreater(resume[0][1], 0)
+
+        # delete role
+        client.post("/role/delete/", {"id" : self.role.id }, follow = True)
+
+        # verify experience is still recorded
+        resume = self.user.profile.get_resume()
+        self.assertNotEqual(resume, [])
+        self.assertEqual(resume[0][0], self.skill)
+        self.assertGreater(resume[0][1], 0)

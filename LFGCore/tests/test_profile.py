@@ -72,12 +72,13 @@ class ProfileUpdateRequiredFields(TestCase):
         self.assertTrue(content.select_one("#id_email").has_attr("required"))
 
 # https://github.com/LFG-LookingForGroup/LFG/issues/21
+# https://github.com/LFG-LookingForGroup/LFG/issues/23
 class LeaveProjectButtonOnOtherProfile(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
         self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
-        self.project = Project.objects.create(name = 'test_project', description = 'this is a testing project')
-        self.creator_membership = self.project.set_creator(self.creator)
+        self.project = Project.objects.create_project(self.creator, name = 'test_project', description = 'this is a testing project')
+        self.creator_membership = self.creator.profile.member_set.get(project = self.project)
 
     def test_appears_on_own_profile(self):
         client = Client()
