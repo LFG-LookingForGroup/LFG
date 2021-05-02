@@ -95,17 +95,10 @@ def role_apply(request, id):
     return HttpResponseNotFound()
   else:
     role = Role.objects.get(id=id)
-    if request.user.profile.applications.filter(id=id).exists():
-      application = request.user.profile.application_set.get(role=role)
-      if application.status == 'R':
-        application.status = 'A'
-        application.save()
-        return redirect(request.POST['redirect'])
-      else:
-        return HttpResponseNotFound()
+    application = role.apply(request.user)
+    if application is None:
+      return HttpResponseNotFound()
     else:
-      role = Role.objects.get(id=id)
-      request.user.profile.applications.add(role, through_defaults={ "status": 'A' })
       return redirect(request.POST['redirect'])
 
 @login_required
@@ -130,10 +123,7 @@ def accept_offer(request, application_id):
     return HttpResponseNotFound()
   else:
     application = Application.objects.get(id=application_id)
-    application.applicant.projects.add(application.role.project, through_defaults={ "is_owner": False, "start_date": datetime.now(timezone.utc) })
-    membership = Member.objects.get(project=application.role.project, profile=application.applicant)
-    membership.roles.add(application.role)
-    application.delete()
+    application.graduate_to_membership()
     return redirect('/accounts/profile/')
 
 @login_required

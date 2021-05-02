@@ -33,6 +33,9 @@ class Profile(models.Model):
         for skill in role.skills.all():
           skillset[skill] += duration
     return [(skill, round(skillset[skill], 2)) for skill in skillset]
+
+  def apply(self, role):
+    return role.apply(self.user)
   
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -95,6 +98,7 @@ class Project(models.Model):
     creator.profile.projects.add(self, through_defaults={"is_owner": True, "start_date": datetime.now(timezone.utc)})
     membership = creator.profile.member_set.get(project=self)
     membership.roles.add(new_role)
+    return membership
 
 class Member(models.Model):
   profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
@@ -119,6 +123,19 @@ class Role(models.Model):
   def __str__(self):
     return self.title
 
+  def apply(self, user):
+    if user.profile.application_set.filter(role = self).exists():
+      application = user.profile.application_set.get(role = self)
+      if application.status in ['R', 'D']:
+        application.status = 'A'
+        application.save()
+        return application
+      else:
+        return None
+    else:
+      user.profile.applications.add(self, through_defaults={ "status": 'A' })
+      return user.profile.application_set.get(role = self)
+
 class Application(models.Model):
   applicant = models.ForeignKey(Profile, on_delete=models.CASCADE)
   role = models.ForeignKey(Role, on_delete=models.CASCADE)
@@ -128,6 +145,13 @@ class Application(models.Model):
     ('R', 'Rejected'),
     ('D', 'Declined')
   ))
+
+  def graduate_to_membership(self):
+    self.applicant.projects.add(self.role.project, through_defaults={ "is_owner": False, "start_date": datetime.now(timezone.utc) })
+    membership = Member.objects.get(project=self.role.project, profile=self.applicant)
+    membership.roles.add(self.role)
+    self.delete()
+    return membership
 
 class Skill(models.Model):
   parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
