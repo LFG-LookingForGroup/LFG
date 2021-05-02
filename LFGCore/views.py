@@ -85,7 +85,7 @@ def role_delete(request):
     to_delete = Role.objects.get(id=request.POST['id'])
     project_id = to_delete.project.id
     to_delete.delete()
-    return redirect(f'/project/{project_id}')
+    return redirect(f'/project/{project_id}/')
 
 @login_required
 def role_apply(request, id):

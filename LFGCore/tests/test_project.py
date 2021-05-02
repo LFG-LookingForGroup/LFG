@@ -15,7 +15,6 @@ class ProjectTestCases(TestCase):
         test_project = Project.objects.create(name= 'test_project', description = 'this is a testing project')
         test_project.set_creator(self.user)
     
-
     def test_update_project(self):
         c = Client()
         test_project = Project.objects.get(id = 1)
@@ -162,20 +161,19 @@ class KickMemberVisibility(TestCase):
         application = self.role.apply(self.user)
         self.user_membership = application.graduate_to_membership()
 
-    def test(self):
-        user_client = Client()
-        user_client.login(username = self.user.username, password = "abc123")
+    def test_visible_for_creator(self):
+        client = Client()
+        client.login(username = self.creator.username, password = 'abc123')
 
-        creator_client = Client()
-        creator_client.login(username = self.creator.username, password = 'abc123')
-
-        # kick member is visible for project creator
-        resp = creator_client.get(f"/project/{self.project.id}/", follow = True)
+        resp = client.get(f"/project/{self.project.id}/", follow = True)
         content = BeautifulSoup(resp.content, 'html.parser')
         self.assertNotEquals(content.select(f"form[action='/membership/quit/{self.user_membership.id}/']"), [])
 
-        # kick creator not visible for project member
-        resp = user_client.get(f"/project/{self.project.id}/", follow = True)
+    def test_not_visible_for_member(self):
+        client = Client()
+        client.login(username = self.user.username, password = "abc123")
+
+        resp = client.get(f"/project/{self.project.id}/", follow = True)
         content = BeautifulSoup(resp.content, 'html.parser')
         self.assertEquals(content.select(f"form[action='/membership/quit/{self.creator_membership.id}/']"), [])
 

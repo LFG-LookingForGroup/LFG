@@ -4,24 +4,51 @@ from django.contrib.auth.models import User
 from bs4 import BeautifulSoup
 
 # https://github.com/LFG-LookingForGroup/LFG/issues/5
-class UpdateProfileVisibility(TestCase):
+class UpdateProfileButtonVisibility(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
         self.user2 = User.objects.create_user(username = 'test_user_2', password = "abc123", email = "testuser2@email.com", first_name = 'test_user_2_fname', last_name = 'test_user_2_lname',)
+        
+        self.client = Client()
+        self.client.login(username = self.user.username, password = "abc123")
 
-    def test(self):
-        client = Client()
-        client.login(username = self.user.username, password = "abc123")
-
-        client2 = Client()
-        client2.login(username = self.user2.username, password = "abc123")
-
-        # update profile button appears on own profile
-        resp = client.get(f"/accounts/profile/", follow = True)
+    def test_appears_on_own_profile(self):
+        resp = self.client.get(f"/accounts/profile/", follow = True)
         content = BeautifulSoup(resp.content, 'html.parser')
         self.assertNotEquals(content.select(f"form[action='/accounts/profile/update/']"), [])
 
-        # update profile button doesn't appear on others profile
-        resp = client.get(f"/accounts/profile/{self.user2.id}/", follow = True)
+    def test_appears_on_own_profile_2(self):
+        resp = self.client.get(f"/accounts/profile/{self.user.id}/", follow = True)
+        content = BeautifulSoup(resp.content, 'html.parser')
+        self.assertNotEquals(content.select(f"form[action='/accounts/profile/update/']"), [])
+
+    def test_doesnt_appear_on_other_profile(self):
+        resp = self.client.get(f"/accounts/profile/{self.user2.id}/", follow = True)
         content = BeautifulSoup(resp.content, 'html.parser')
         self.assertEquals(content.select(f"form[action='/accounts/profile/update/']"), [])
+
+# https://github.com/LFG-LookingForGroup/LFG/issues/12
+class PasswordUpdateRequirementsSatisfied(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
+    
+        self.client = Client()
+        self.client.login(username = self.user.username, password = "abc123")
+
+    def test_incorrect_password_change(self):
+        resp = self.client.post("/accounts/profile/update/", {
+            'update-type' : 'password',
+            'old_password' : 'abc123',
+            'new_password1' : '1',
+            'new_password2' : '1'
+        })
+        self.assertFalse(self.client.login(username = self.user.username, password = '1'))
+
+    def test_correct_password_change(self):
+        resp = self.client.post("/accounts/profile/update/", {
+            'update-type' : 'password',
+            'old_password' : 'abc123',
+            'new_password1' : 'Tr0ub4dor&3',
+            'new_password2' : 'Tr0ub4dor&3'
+        })
+        self.assertTrue(self.client.login(username = self.user.username, password = 'Tr0ub4dor&3'))
