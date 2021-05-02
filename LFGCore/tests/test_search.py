@@ -8,11 +8,11 @@ class SearchResultError(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
         self.project = Project.objects.create(name = 'test_project', description = 'this is a testing project')
-        self.creator_membership = self.project.set_creator(self.creator)
+        self.creator_membership = self.project.set_creator(self.user)
 
         self.client = Client()
         self.client.login(username = self.user.username, password = "abc123")
 
     def test(self):
-        resp = self.client.get("/search/", {"query", "test"}, follow = True)
+        resp = self.client.get("/search/", {"query": "test"}, follow = True)
         self.assertEquals(resp.status_code, 200)

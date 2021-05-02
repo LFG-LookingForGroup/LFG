@@ -197,5 +197,5 @@ class BlankProjectUpdate(TestCase):
         self.assertEquals(content.select_one("#id_description")["value"], self.project.description)
 
         # check that name field is required
-        self.assertTrue(content.select_one("#id_name")["required"] is not None)
+        self.assertTrue(content.select_one("#id_name").has_attr("required"))
 

@@ -17,7 +17,7 @@ class UpdateProfileButtonVisibility(TestCase):
         content = BeautifulSoup(resp.content, 'html.parser')
         self.assertNotEquals(content.select(f"form[action='/accounts/profile/update/']"), [])
 
-    def test_appears_on_own_profile_2(self):
+    def test_appears_on_own_profile_explicit_link(self):
         resp = self.client.get(f"/accounts/profile/{self.user.id}/", follow = True)
         content = BeautifulSoup(resp.content, 'html.parser')
         self.assertNotEquals(content.select(f"form[action='/accounts/profile/update/']"), [])
@@ -52,3 +52,21 @@ class PasswordUpdateRequirementsSatisfied(TestCase):
             'new_password2' : 'Tr0ub4dor&3'
         })
         self.assertTrue(self.client.login(username = self.user.username, password = 'Tr0ub4dor&3'))
+
+# https://github.com/LFG-LookingForGroup/LFG/issues/16
+class ProfileUpdateRequiredFields(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
+    
+        self.client = Client()
+        self.client.login(username = self.user.username, password = "abc123")
+
+    def test(self):
+        resp = self.client.get("/accounts/profile/update/", follow = True)
+        self.assertEquals(resp.status_code, 200)
+
+        content = BeautifulSoup(resp.content, "html.parser")
+        self.assertTrue(content.select_one("#id_username").has_attr("required"))
+        self.assertTrue(content.select_one("#id_first_name").has_attr("required"))
+        self.assertTrue(content.select_one("#id_last_name").has_attr("required"))
+        self.assertTrue(content.select_one("#id_email").has_attr("required"))
