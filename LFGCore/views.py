@@ -51,7 +51,7 @@ def project(request, id=None):
   if not membership.exists():
     membership = None
   else:
-    membership = membership[0]
+    membership = membership.first()
     is_owner = membership.is_owner
   role_list = project.applicable_role_list(request.user)
 
@@ -137,7 +137,7 @@ def quit_membership(request, member_id):
   if not request_membership.exists():
     return HttpResponseNotFound()
 
-  request_membership = request_membership[0]
+  request_membership = request_membership.first()
 
   if request_membership.is_owner:
     if request_membership == delete_membership:
@@ -160,7 +160,7 @@ def project_create(request):
     form = ProjectForm(request.POST)
     if form.is_valid():
       new_project = form.save()
-      new_project.set_creator(request.user)
+      project.set_creator(request.user)
       return redirect(f'/project/{new_project.id}')
   else:
     form = ProjectForm()

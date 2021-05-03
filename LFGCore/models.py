@@ -60,8 +60,7 @@ class Friend(models.Model):
 class ProjectManager(models.Manager):
   def create_project(self, creator, *args, **kwargs):
     project = self.create(*args, **kwargs)
-    creator_role = Role.objects.create(project=project, title="Creator", description="Creator of the project.")
-    project.add_member(creator, [creator_role], through_defaults = {"is_owner": True})
+    project.set_creator(creator)
     return project
 
 class Project(models.Model):
@@ -110,6 +109,10 @@ class Project(models.Model):
     for role in roles:
       membership.roles.add(role)
     return membership
+
+  def set_creator(self, creator):
+    creator_role = Role.objects.create(project = self, title = "Creator", description = "Creator of the project.")
+    self.add_member(creator, [creator_role], through_defaults = {"is_owner": True})
 
 class Member(models.Model):
   profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
