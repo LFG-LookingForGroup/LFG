@@ -24,15 +24,13 @@ class Profile(models.Model):
   def get_resume(self):
     skillset = defaultdict(float)
     for membership in self.member_set.all():
-      end_date = membership.end_date
-      if end_date == None:
-        end_date = datetime.now(timezone.utc)
-      start_date = membership.start_date
-      duration = (end_date - start_date).total_seconds() / 3600
-      for role in membership.roles.all():
-        for skill in role.skills.all():
-          skillset[skill] += duration
-    return [(skill, round(skillset[skill], 2)) for skill in skillset]
+      # end_date = now() if membership.end_date == None else membership.end_date
+      # start_date = membership.start_date
+      # duration = (end_date - start_date).total_seconds() / 3600
+      for period in membership.roleperiod_set.all():
+        for skill in period.role.skills.all():
+          skillset[skill] += period.duration()
+    return [(skill, skillset[skill]) for skill in skillset]
 
   def apply(self, role):
     return role.apply(self.user)
@@ -75,7 +73,7 @@ class Project(models.Model):
 
   def applicable_role_list(self, user):
     roles = []
-    for role in self.role_set.all():
+    for role in self.get_roles():
       is_applicable = True
       if not user.is_authenticated:
         is_applicable = False
@@ -114,18 +112,23 @@ class Project(models.Model):
     creator_role = Role.objects.create(project = self, title = "Creator", description = "Creator of the project.")
     self.add_member(creator, [creator_role], through_defaults = {"is_owner": True})
 
+  def get_roles(self):
+    return self.role_set.filter(active=True)
+
 class Member(models.Model):
   profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
   project = models.ForeignKey(Project, on_delete=models.CASCADE)
-  roles = models.ManyToManyField('Role')
+  roles = models.ManyToManyField('Role', through='RolePeriod')
   is_owner = models.BooleanField()
-  start_date = models.DateTimeField()
+  start_date = models.DateTimeField(default=now)
   end_date = models.DateTimeField(null=True)
   active = models.BooleanField(default=True)
 
   def deactivate(self):
     self.active = False
     self.end_date = now()
+    for period in self.roleperiod_set.all():
+      period.deactivate()
     self.save()
 
 class Role(models.Model):
@@ -133,6 +136,7 @@ class Role(models.Model):
   skills = models.ManyToManyField('Skill')
   title = models.CharField(max_length=45)
   description = models.CharField(max_length=1000)
+  active = models.BooleanField(default=True)
 
   def __str__(self):
     return self.title
@@ -149,6 +153,31 @@ class Role(models.Model):
     else:
       user.profile.applications.add(self, through_defaults={ "status": 'A' })
       return user.profile.application_set.get(role = self)
+
+  def deactivate(self):
+    self.active = False
+    for period in self.roleperiod_set.all():
+      period.deactivate()
+    self.save()
+
+class RolePeriod(models.Model):
+  role = models.ForeignKey(Role, on_delete=models.CASCADE)
+  membership = models.ForeignKey(Member, on_delete=models.CASCADE)
+  start_date = models.DateTimeField(default=now)
+  end_date = models.DateTimeField(null=True, default=None)
+
+  def get_end(self):
+    if self.end_date == None:
+      return now()
+    else:
+      return self.end_date
+
+  def duration(self):
+    return (self.get_end() - self.start_date).total_seconds() / 3600
+
+  def deactivate(self):
+    self.end_date = now()
+    self.save()
 
 class Application(models.Model):
   applicant = models.ForeignKey(Profile, on_delete=models.CASCADE)

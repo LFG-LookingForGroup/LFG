@@ -84,7 +84,7 @@ def role_delete(request):
   else:
     to_delete = Role.objects.get(id=request.POST['id'])
     project_id = to_delete.project.id
-    to_delete.delete()
+    to_delete.deactivate()
     return redirect(f'/project/{project_id}/')
 
 @login_required
@@ -160,7 +160,7 @@ def project_create(request):
     form = ProjectForm(request.POST)
     if form.is_valid():
       new_project = form.save()
-      project.set_creator(request.user)
+      new_project.set_creator(request.user)
       return redirect(f'/project/{new_project.id}')
   else:
     form = ProjectForm()
