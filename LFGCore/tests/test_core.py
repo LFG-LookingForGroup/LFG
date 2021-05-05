@@ -61,6 +61,52 @@ class ProjectCreation(TestCase):
         
         self.assertTrue(Project.objects.filter(name = "test_project").exists())
 
+class RoleCreation(TestCase):
+    def setUp(self):
+        self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
+        self.project = Project.objects.create_project(self.creator, name = 'test_project', description = 'this is a testing project')
+        self.skill1 = Skill.objects.create(name = "test_skill_1", description = "this is a test skill")
+        self.skill2 = Skill.objects.create(name = "test_skill_2", description = "this is another test skill")
+        self.client = Client()
+        self.client.login(username = self.creator.username, password = "abc123")
+    
+    def test_create_single_skill_role(self):
+        resp = self.client.get(f"/project/{self.project.id}/", follow = True)
+        self.assertEquals(resp.status_code, 200)
+
+        resp = self.client.post("/role/create/", {
+            "title" : "test_role",
+            "description" : "this is a test role",
+            "skills" : self.skill1.id,
+            "project" : self.project.id
+        }, follow = True)
+        self.assertTrue(resp.status_code, 200)
+
+        role_query = Role.objects.filter(title = "test_role", project = self.project)
+        self.assertTrue(role_query.exists())
+
+        role = role_query.first()
+        self.assertTrue(self.skill1 in role.skills.all())
+
+    def test_create_multi_skill_role(self):
+        resp = self.client.get(f"/project/{self.project.id}/", follow = True)
+        self.assertEquals(resp.status_code, 200)
+
+        resp = self.client.post("/role/create/", {
+            "title" : "test_role",
+            "description" : "this is a test role",
+            "skills" : [self.skill1.id, self.skill2.id],
+            "project" : self.project.id
+        }, follow = True)
+        self.assertTrue(resp.status_code, 200)
+
+        role_query = Role.objects.filter(title = "test_role", project = self.project)
+        self.assertTrue(role_query.exists())
+
+        role = role_query.first()
+        self.assertTrue(self.skill1 in role.skills.all())
+        self.assertTrue(self.skill2 in role.skills.all())
+
 class ProfileCreation(TestCase):
     def setUp(self):
         testuser = User.objects.create(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
