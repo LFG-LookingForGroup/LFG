@@ -3,6 +3,46 @@ from LFGCore.models import *
 from django.contrib.auth.models import User
 from datetime import datetime
 
+class SignUp(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_valid_password(self):
+        paswd = "T3st_P4ssw0rd"
+
+        resp = self.client.get("/accounts/create/", follow = True)
+        self.assertEquals(resp.status_code, 200)
+
+        resp = self.client.post("/accounts/create/", {
+            "username" : "test_account",
+            "first_name" : "test",
+            "last_name" : "account",
+            "email" : "test@account.com",
+            "password1" : paswd,
+            "password2" : paswd,
+        }, follow = True)
+        self.assertEquals(resp.status_code, 200)
+
+        self.assertTrue(self.client.login(username = "test_account", password = paswd))
+
+    def test_invalid_password(self):
+        paswd = "abc"
+
+        resp = self.client.get("/accounts/create/", follow = True)
+        self.assertEquals(resp.status_code, 200)
+
+        resp = self.client.post("/accounts/create/", {
+            "username" : "test_account",
+            "first_name" : "test",
+            "last_name" : "account",
+            "email" : "test@account.com",
+            "password1" : paswd,
+            "password2" : paswd,
+        }, follow = True)
+        self.assertEquals(resp.status_code, 200)
+
+        self.assertFalse(self.client.login(username = "test_account", password = paswd))
+
 class ProfileCreation(TestCase):
     def setUp(self):
         testuser = User.objects.create(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
@@ -82,3 +122,4 @@ class UserAccess(TestCase):
         c.login(username = "test_user", password = "abc123")
         resp = c.get(f"/project/{testproject.id}", follow=True)
         self.assertEquals(resp.status_code, 200)
+
