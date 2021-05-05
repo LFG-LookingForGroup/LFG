@@ -285,6 +285,9 @@ def index(request):
     'logged_in' : request.user.is_authenticated 
   })
 
+def advanced_search(request):
+      return render(request, "LFGCore/advanced.html", {})
+
 # @login_required
 # @transaction.atomic
 # def apply(request):
