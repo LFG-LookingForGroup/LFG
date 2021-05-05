@@ -43,6 +43,24 @@ class SignUp(TestCase):
 
         self.assertFalse(self.client.login(username = "test_account", password = paswd))
 
+class ProjectCreation(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username = "test_user", password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname')
+        self.client = Client()
+        self.client.login(username = self.user.username, password = "abc123")
+
+    def test(self):
+        resp = self.client.get("/project/create/", follow = True)
+        self.assertEquals(resp.status_code, 200)
+
+        resp = self.client.post("/project/create/", {
+            "name" : "test_project",
+            "description" : "test_project_description"
+        }, follow = True)
+        self.assertEquals(resp.status_code, 200)
+        
+        self.assertTrue(Project.objects.filter(name = "test_project").exists())
+
 class ProfileCreation(TestCase):
     def setUp(self):
         testuser = User.objects.create(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
