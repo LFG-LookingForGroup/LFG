@@ -28,7 +28,7 @@
     <div class="form-row">
         <div class="form-group col-12">
            <div class="input-group">
-               <input class="form-control py-2 border-right-0 border" type="search" placeholder="Project Name Contains...">
+               <input class="form-control py-2 border-right-0 border" type="search" name="project_contains" placeholder="Project Name Contains...">
                <span class="input-group-append">
                    <div class="input-group-text bg-transparent">
                        <i class="fa fa-search"></i>
@@ -40,7 +40,7 @@
     <div class="form-row">
         <div class="form-group col-12">
            <div class="input-group">
-               <input class="form-control py-2 border-right-0 border" type="search" placeholder="Exact Project Name...">
+               <input class="form-control py-2 border-right-0 border" type="search" name= "project_exact" placeholder="Exact Project Name...">
                <span class="input-group-append">
                    <div class="input-group-text bg-transparent">
                        <i class="fa fa-search"></i>
@@ -50,9 +50,9 @@
         </div>
     </div>
     <div class="form-row">
-        <div class="form-group col-12">
+        <div class="form-group md-4">
            <div class="input-group">
-               <input class="form-control py-2 border-right-0 border" type="search" placeholder="User Name...">
+               <input class="form-control py-2 border-right-0 border" type="search" name="user_name" placeholder="User Name...">
                <span class="input-group-append">
                    <div class="input-group-text bg-transparent">
                        <i class="fa fa-search"></i>
@@ -60,11 +60,10 @@
                </span>
            </div> 
         </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-12">
+        &nbsp; &nbsp;
+        <div class="form-group md-4">
            <div class="input-group">
-               <input class="form-control py-2 border-right-0 border" type="search" placeholder="First Name...">
+               <input class="form-control py-2 border-right-0 border" type="search" name="first_name" placeholder="First Name...">
                <span class="input-group-append">
                    <div class="input-group-text bg-transparent">
                        <i class="fa fa-search"></i>
@@ -72,33 +71,36 @@
                </span>
            </div> 
         </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-12">
-           <div class="input-group">
-               <input class="form-control py-2 border-right-0 border" type="search" placeholder="Last Name...">
-               <span class="input-group-append">
-                   <div class="input-group-text bg-transparent">
-                       <i class="fa fa-search"></i>
-                   </div>
-               </span>
-           </div> 
-        </div>
-    </div>
+        &nbsp; &nbsp;
     
-     
-      <div class="form-row">
+        <div class="form-group md-4">
+            <div class="input-group">
+                <input class="form-control py-2 border-right-0 border" type="search" name="last_name" placeholder="Last Name...">
+                <span class="input-group-append">
+                    <div class="input-group-text bg-transparent">
+                        <i class="fa fa-search"></i>
+                    </div>
+            </span>
+            </div> 
+        </div>   
+        &nbsp; &nbsp;
         <div class="form-group col-md-4">
-          <label for="input_role">Roles</label>
-          <select id="input_role" class="form-control">
-            <option selected>Choose...</option>
-            <option>...</option>
-          </select>
-        </div>
-      </div>
-      
-      <button type="submit" class="btn btn-primary">Search</button>
+            <!-- <label for="category">Category</label> -->
+            <select id="skill" class="form-control" name="skill">
+              <option selected>Skill...</option>
+              {% for skill in skills %}
+              <option value="{{ skill.name }}">{{ skill.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          </div>
+    <div class="form-row">  
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>        
 </form>
+
+<hr />
+
 
 </main><!-- /.container -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>

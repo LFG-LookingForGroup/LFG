@@ -13,6 +13,7 @@ from LFGCore.models import *
 from LFGCore.forms import SignUpForm, UpdateUserForm, UpdateProfileForm, ProjectForm, ProjectRoleForm, UpdateProjectForm
 from datetime import datetime
 
+
 def about(request):
   return render(request, "LFGCore/about.html", {'logged_in' : request.user.is_authenticated})
 
@@ -286,7 +287,15 @@ def index(request):
   })
 
 def advanced_search(request):
-      return render(request, "LFGCore/advanced.html", {})
+      project_contains_query = request.GET.get('project_contains'),
+      project_exact_query = request.GET.get('nproject_exact'),
+      user_name_query = request.GET.get('user_name'),
+      first_name_query = request.GET.get('first_name'),
+      last_name_query = request.GET.get('last_name'),
+      return render(request, "LFGCore/advanced.html", {
+        'logged_in' : request.user.is_authenticated,
+        'skills' : Skill.objects.all()
+      })
 
 # @login_required
 # @transaction.atomic
