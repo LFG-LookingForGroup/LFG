@@ -14,7 +14,7 @@ from LFGCore.forms import SignUpForm, UpdateUserForm, UpdateProfileForm, Project
 from datetime import datetime
 
 def about(request):
-  return render(request, "LFGCore/about.html", {'logged_in' : request.user.is_authenticated})
+      return render(request, "LFGCore/about.html", {'logged_in' : request.user.is_authenticated})
 
 @login_required
 def account(request):
@@ -272,7 +272,11 @@ def index(request):
   return render(request, "LFGCore/index.html", { 
     'logged_in' : request.user.is_authenticated 
   })
-
+def advanced_search(request):    
+      return render(request, "LFGCore/advanced.html", {
+        'logged_in' : request.user.is_authenticated,
+        'skills' : Skill.objects.all()
+      })
 # @login_required
 # @transaction.atomic
 # def apply(request):

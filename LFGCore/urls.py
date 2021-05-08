@@ -36,5 +36,6 @@ urlpatterns = [
     path('role/apply/<int:id>/', views.role_apply, name='role_apply'),
     path('membership/quit/<int:member_id>/', views.quit_membership, name='member_quit'),
     path('application/updatestatus/<int:id>/', views.application_update_status, name='application_update_status'),
+    path('advanced/', views.advanced_search, name='advanced_search'), 
     path('', views.index, name='home')
 ]
