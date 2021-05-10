@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from collections import defaultdict
 from datetime import datetime, timezone
+from django.core.validators import RegexValidator
 
 def now():
   return datetime.now(timezone.utc)
@@ -18,7 +19,8 @@ class Profile(models.Model):
   chats = models.ManyToManyField('ChatChannel', related_name="chats", through='Chat')
   friends = models.ManyToManyField("self", through='Friend')
   bio = models.CharField(max_length=1000, null=True, default="")
-  telephone_number = models.DecimalField(max_digits=11, decimal_places=0, null=True)
+  phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+  telephone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True, default="") # validators should be a list
   applications = models.ManyToManyField('Role', through='Application', related_name="role_application")
 
   def get_resume(self):
