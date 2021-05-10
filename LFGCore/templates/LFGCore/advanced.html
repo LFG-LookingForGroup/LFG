@@ -87,9 +87,9 @@
         <div class="form-group col-md-4">
             <!-- <label for="category">Category</label> -->
             <select id="skill" class="form-control" name="skill">
-              <option selected>Skill...</option>
+              <option value="None" selected>Select a skill</option>
               {% for skill in skills %}
-              <option value="{{ skill.name }}">{{ skill.name }}</option>
+              <option value="{{ skill.id }}">{{ skill.name }}</option>
               {% endfor %}
             </select>
           </div>
@@ -98,6 +98,15 @@
         <button type="submit" class="btn btn-primary">Search</button>
     </div>        
 </form>
+
+<p>
+    {% for project in project_results %}
+        <a href="/project/{{project.id}}/">{{project.name}}</a>
+    {% endfor %}
+    {% for user in user_results %}
+        <a href="/accounts/profile/{{user.id}}/">{{user.username}}</a>
+    {% endfor %}
+</p>
 
 <hr />
 
