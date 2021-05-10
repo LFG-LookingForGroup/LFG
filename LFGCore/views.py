@@ -274,10 +274,48 @@ def index(request):
     'logged_in' : request.user.is_authenticated 
   })
 def advanced_search(request):    
-      return render(request, "LFGCore/advanced.html", {
-        'logged_in' : request.user.is_authenticated,
-        'skills' : Skill.objects.all()
-      })
+
+  project_search_performed = False
+  project_results = Project.objects.all()
+  if 'project_contains' in request.GET and request.GET['project_contains'] != "":
+    project_results = project_results.filter(name__icontains = request.GET['project_contains'])
+    project_search_performed = True
+  if 'project_exact' in request.GET and request.GET['project_exact'] != "":
+    project_results = project_results.filter(name__iexact=request.GET['project_exact'])
+    project_search_performed = True
+  if 'skill' in request.GET and request.GET['skill'] != "None":
+    try:
+      skill = Skill.objects.get(id=int(request.GET['skill']))
+      project_results = project_results.filter(role_set__skills=skill) # TODO fix this
+      project_search_performed = True
+    except ValueError:
+      pass
+
+  if not project_search_performed:
+    project_results = []
+
+  user_search_performed = False
+  user_results = User.objects.all()
+  if 'user_name' in request.GET and request.GET['user_name'] != "":
+    user_results = user_results.filter(username__icontains=request.GET['user_name'])
+    user_search_performed = True
+  if 'first_name' in request.GET and request.GET['first_name'] != "":
+    user_results = user_results.filter(first_name__icontains=request.GET['first_name'])
+    user_search_performed = True
+  if 'last_name' in request.GET and request.GET['last_name'] != "":
+    user_results = user_results.filter(last_name__icontains=request.GET['last_name'])
+    user_search_performed = True
+
+  if not user_search_performed:
+    user_results = []
+
+  return render(request, "LFGCore/advanced.html", {
+    'logged_in' : request.user.is_authenticated,
+    'skills' : Skill.objects.all(),
+    'project_results' : project_results,
+    'user_results' : user_results
+  })
+
 # @login_required
 # @transaction.atomic
 # def apply(request):
