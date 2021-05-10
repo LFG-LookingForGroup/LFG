@@ -14,7 +14,7 @@ from LFGCore.forms import SignUpForm, UpdateUserForm, UpdateProfileForm, Project
 from datetime import datetime
 
 def about(request):
-  return render(request, "LFGCore/about.html", {'logged_in' : request.user.is_authenticated})
+      return render(request, "LFGCore/about.html", {'logged_in' : request.user.is_authenticated})
 
 @login_required
 def account(request):
@@ -29,7 +29,8 @@ def profile(request, id=None):
     user = User.objects.get(id=id)
   
   return render(request, 'LFGCore/profile.html', {
-    "user": user, 
+    "user": user,
+    "is_own_profile": user == request.user,
     "memberships" : user.profile.member_set.filter(project__active=True),
     "skillset": user.profile.get_resume(), 
     'logged_in' : request.user.is_authenticated 
@@ -50,7 +51,7 @@ def project(request, id=None):
   if not membership.exists():
     membership = None
   else:
-    membership = membership[0]
+    membership = membership.first()
     is_owner = membership.is_owner
   role_list = project.applicable_role_list(request.user)
 
@@ -83,8 +84,8 @@ def role_delete(request):
   else:
     to_delete = Role.objects.get(id=request.POST['id'])
     project_id = to_delete.project.id
-    to_delete.delete()
-    return redirect(f'/project/{project_id}')
+    to_delete.deactivate()
+    return redirect(f'/project/{project_id}/')
 
 @login_required
 def role_apply(request, id):
@@ -94,17 +95,10 @@ def role_apply(request, id):
     return HttpResponseNotFound()
   else:
     role = Role.objects.get(id=id)
-    if request.user.profile.applications.filter(id=id).exists():
-      application = request.user.profile.application_set.get(role=role)
-      if application.status == 'R':
-        application.status = 'A'
-        application.save()
-        return redirect(request.POST['redirect'])
-      else:
-        return HttpResponseNotFound()
+    application = role.apply(request.user)
+    if application is None:
+      return HttpResponseNotFound()
     else:
-      role = Role.objects.get(id=id)
-      request.user.profile.applications.add(role, through_defaults={ "status": 'A' })
       return redirect(request.POST['redirect'])
 
 @login_required
@@ -129,10 +123,7 @@ def accept_offer(request, application_id):
     return HttpResponseNotFound()
   else:
     application = Application.objects.get(id=application_id)
-    application.applicant.projects.add(application.role.project, through_defaults={ "is_owner": False, "start_date": datetime.now(timezone.utc) })
-    membership = Member.objects.get(project=application.role.project, profile=application.applicant)
-    membership.roles.add(application.role)
-    application.delete()
+    application.graduate_to_membership()
     return redirect('/accounts/profile/')
 
 @login_required
@@ -146,7 +137,7 @@ def quit_membership(request, member_id):
   if not request_membership.exists():
     return HttpResponseNotFound()
 
-  request_membership = request_membership[0]
+  request_membership = request_membership.first()
 
   if request_membership.is_owner:
     if request_membership == delete_membership:
@@ -169,10 +160,7 @@ def project_create(request):
     form = ProjectForm(request.POST)
     if form.is_valid():
       new_project = form.save()
-      new_role = Role.objects.create(project=new_project, title="Creator", description="Creator of the project.")
-      request.user.profile.projects.add(new_project, through_defaults={"is_owner": True, "start_date": datetime.now(timezone.utc)})
-      membership = request.user.profile.member_set.get(project=new_project)
-      membership.roles.add(new_role)
+      new_project.set_creator(request.user)
       return redirect(f'/project/{new_project.id}')
   else:
     form = ProjectForm()
@@ -284,7 +272,11 @@ def index(request):
   return render(request, "LFGCore/index.html", { 
     'logged_in' : request.user.is_authenticated 
   })
-
+def advanced_search(request):    
+      return render(request, "LFGCore/advanced.html", {
+        'logged_in' : request.user.is_authenticated,
+        'skills' : Skill.objects.all()
+      })
 # @login_required
 # @transaction.atomic
 # def apply(request):

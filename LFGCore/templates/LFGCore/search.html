@@ -4,36 +4,23 @@
 <title>Begin Your Search Here!</title>
 {% endblock header %}
 
-<style>
-
-  .form-control{
-
-    width: 30%;
-  }
-
-</style>
-
 {% block content %}
 <h1>Search</h1>
-<form action="/search" class="form-group">
-  <input type="text" class="form-control" style="width: 30%;"  id="SearchBar" name="query" placeholder="Position Title" value="{{ original_query }}"> <br>
-  <input type="submit" value="Search" class="btn btn-primary">
+<form action="/search">
+  <input type="text" id="SearchBar" name="query" placeholder="Position Title" value="{{ original_query }}"> <br>
+  <input type="submit" value="Search">
 </form>
-
-<table class="table"> 
-  <thead>
+<a href="/advanced/"><button>Advanced Search</button></a>
+<table>
   <tr>
-    <td scope="col">Name</td>
-    <td scope="col">Description</td>
-    <td scope="col">Roles</td>
+    <td>Name</td>
+    <td>Description</td>
+    <td>Roles</td>
   </tr>
-</thead>
-
-<tbody>
   {% for project, roles in search_results_project %}
     <tr> 
-      <th scope="row"><a href="/project/{{ project.id }}/">{{ project.name }}</a></th>
-      <th >{{ project.description }}</th>
+      <th><a href="/project/{{ project.id }}/">{{ project.name }}</a></th>
+      <th>{{ project.description }}</th>
       <th>
       <table>
         <tr>
@@ -60,14 +47,12 @@
   {% empty %}
     <th>Sorry, no project results were found.</th>
   {% endfor %}
-
-</tbody>
 </table>
-<table class="table">
+<table>
   <tr>
-    <td scope="col">Username</td>
-    <td scope="col">First Name</td>
-    <td scope="col">Last Name</td>
+    <td>Username</td>
+    <td>First Name</td>
+    <td>Last Name</td>
   </tr>
   {% for user in search_results_user %}
   <tr>

@@ -87,19 +87,21 @@ input{
 
 <div class="hero" style="height: 400px;"></div>
 <h1 style="text-align: center;">Welcome to LFG!</h1>
+<br>
 
 
 <!-- <p style="text-align: center;">Please log in, create an account or search for a user or Project here.</p> -->
 
 
-
+<br>
 <div id="searchBarWrap" >
   
   <form action="/search" style="opacity: 0.7; width: 100%; padding: 5px;">
     <input type="text" id="SearchBar" name="query" placeholder="Search for Project Name or User"
-      value="{{ original_query }}"> <br>
-    <button style="margin-top: 10px;" type="submit">Search</i></button>
+      value="{{ original_query }}">
+    <button  style="margin-top: 10px;" type="submit">Search</i></button>    
   </form>
+  <a href="/advanced/"><button>Advanced Search</button></a>
 </div>
 
 {% endblock content %}
