@@ -15,10 +15,11 @@
 				position: absolute;
 				top: 25%;
 				right: 10%;
-				bottom: 35%;
+				bottom: 20%;
 				left: 10%;
 	  
 				background-image: url('/static/top/image_1.jpg');
+				background-position: center;
 				background-size: cover;
 	  
 				opacity: 0.2;
@@ -50,10 +51,17 @@
 	<br>
 	<h1 class="display-4" style="color: goldenrod;">OUR TEAM</h1>
 	<p>
-	Looking For Group (LFG) was conceived in 2020 by 6 students studying at Drexel University. 
-	We aim to help people with LFG by helping them connect with potential friends, 
-	or project creators to help them accomplish any kind of task. Whether it be creating 
-	a new website, or provide help in home renovations, LFG is here to help.   
+		When someone needs talent, where do they look? Recruiting agencies? 
+		Job search websites? Public forums? Depending on the type of project they want to complete, 
+		there are any number of places one has to search to find the right talent for the job they need to do. 
+		Looking For Group (LFG) was conceived in 2020 by 6 students studying at Drexel University.
+	</p>
+	<p>
+		LFG exists to simplify that search process. By both streamlining the search system,
+		 
+		and authenticating user experience via prior interactions on the platform, 
+		 we aim to centralize the act of finding the right talent for the project you want to complete,
+		  while ensuring that the people you find are right for the job.   
 	</p>
 
 	<br>
@@ -70,7 +78,7 @@
 		<h1 class="display-4" style="text-align: center;text-align: left;color: goldenrod;">Contact Us</h1>
 			<hr />
 
-		<div class="contact" style="width: 45%;float:left;">
+		<div class="contact" style="width: 100%;float:left;">
 			
 			<div class="container-fluid">
 				<!-- contacts card -->
@@ -118,32 +126,7 @@
 
 
 		</div>
-		<div class="map" style="width: 50%;float:left;">
-
-			<script>
-      
-				function initMap() {
-				  
-				  const uluru = { lat: -25.344, lng: 131.036 };
-				  
-				  const map = new google.maps.Map(document.getElementById("map"), {
-					zoom: 4,
-					center: uluru,
-				  });
-				 
-				  const marker = new google.maps.Marker({
-					position: uluru,
-					map: map,
-				  });
-				}
-			  </script>
-			 <div id="map"></div>
-			<script
-			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDo2LQF6YhMICerE15-cIHjwGe9hN3e2vs&callback=initMap&libraries=&v=weekly"
-			async
-		  ></script>
-
-		</div>
+		
     
 
 
@@ -151,46 +134,34 @@
 
 
 	<hr style="width: 100%;float: left;">
-	<div class="social" style="width: 100%;float: left;padding: 10px;">
+
+	<br>
+	<div class="d-flex align-items-center justify-content-center" style="width: 100%;float: left;padding: 10px;">
+
+				<a href="https://github.com/LFG-LookingForGroup/LFG" class="bi bi-facebook" style="margin-left: 25px;">
+
+					<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
+						<path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
+					</svg>
+
+					Face Book</a>
 
 
+			<a href="https://github.com/LFG-LookingForGroup/LFG" class="bi bi-facebook" style="margin-left: 25px;">
+				<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+					<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+				  </svg>
+	
+				Git Hub</a>
 
-			<ul>
-			<li class="list-group-item">
-						<a href="https://github.com/LFG-LookingForGroup/LFG" class="bi bi-facebook">
-
-						<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
-							<path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
-						</svg>
-
-						Face Book</a>
-
-			</li>
-			<li  class="list-group-item">
-			
-
-			<a href="https://github.com/LFG-LookingForGroup/LFG" class="bi bi-facebook"></a>
-			<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
-				<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-			  </svg>
-
-			Git Hub</a>
-
-		</li>
-
-		<li  class="list-group-item">
-			
-
-			<a href="https://twitter.com/LFG05460340" class="bi bi-facebook"></a>
-			<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
+			<a href="https://twitter.com/LFG05460340" class="bi bi-facebook" style="margin-left: 25px;">
+				<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
 				<path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
 			  </svg>
 
 			Twitter</a>
 
-		</li>
-
-			</ul>
+			
 	</div>
 
 </div>
