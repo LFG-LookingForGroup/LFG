@@ -33,6 +33,7 @@
           <td>
             {% if is_applicable %}
               <form action="/role/apply/{{ role.id }}/" method="post">
+          
                 {% csrf_token %}
                 <input type="hidden" name="redirect" value="/search/?query={{ original_query }}">
                 <button class="button" type="submit">Apply to this role</button>
