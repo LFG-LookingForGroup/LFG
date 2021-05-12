@@ -6,9 +6,33 @@ from django.dispatch import receiver
 from collections import defaultdict
 from datetime import datetime, timezone
 from django.core.validators import RegexValidator
+import math
 
 def now():
   return datetime.now(timezone.utc)
+
+def format_time(hrs):
+  seconds = math.floor((hrs * 3600) % 60)
+  minutes = math.floor((hrs * 60) % 60)
+  hours = math.floor(hrs % 24)
+  days = math.floor((hrs / 24) % 30)
+  months = math.floor((hrs / 720) % 12)
+  years = math.floor(hrs / 8760)
+
+  if minutes < 1:
+    return f"{seconds} seconds"
+  elif hours < 1:
+    return f"{minutes} min, {seconds} sec"
+  elif days < 1:
+    return f"{hours} hrs, {minutes} min"
+  elif months < 1:
+    return f"{days} days, {hours} hrs"
+  elif years < 1:
+    return f"{months} months, {days} days"
+  elif years < 3:
+    return f"{years} years, {months} months"
+  else:
+    return f"{years} years"
 
 # User Data Schema
 class Profile(models.Model):
@@ -32,7 +56,7 @@ class Profile(models.Model):
       for period in membership.roleperiod_set.all():
         for skill in period.role.skills.all():
           skillset[skill] += period.duration()
-    return [(skill, skillset[skill]) for skill in skillset]
+    return [(skill, skillset[skill], format_time(skillset[skill])) for skill in skillset]
 
   def apply(self, role):
     return role.apply(self.user)
