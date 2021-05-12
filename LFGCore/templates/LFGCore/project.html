@@ -28,7 +28,7 @@
       {% if is_owner and member.profile != user.profile and not member.is_owner %}
         <form action="/membership/quit/{{ member.id }}/" method="post">
           {% csrf_token %}
-          <button type="submit">Kick Member</button>
+          <button class="btn btn-primary" type="submit">Kick Member</button>
         </form>
       {% endif %}
     </li>
@@ -37,7 +37,7 @@
 {% if is_owner %}
 <center>
   <form action="/project/update/{{project.id}}/">
-    <input type="submit" value="Update Project" />
+    <input class="btn btn-primary" type="submit" value="Update Project" />
   </form>
 
 </center>
@@ -56,12 +56,13 @@
         <form action="/application/updatestatus/{{ application.id }}/" method="post">
           {% csrf_token %}
           <input type="hidden" name="newstatus" value="O">
-          <button type="submit">Extend Offer</button>
+          <button class="btn btn-primary" type="submit">Extend Offer</button>
         </form>
+        <br>
         <form action="/application/updatestatus/{{ application.id }}/" method="post">
           {% csrf_token %}
           <input type="hidden" name="newstatus" value="R">
-          <button type="submit">Reject Application</button>
+          <button class="btn btn-primary" type="submit">Reject Application</button>
         </form>
         {% endif %}
       </li>
@@ -75,7 +76,7 @@
 <form action="/role/create/" method='post'>
   {% csrf_token %}
   {{ role_form.as_p }}
-  <button type="submit">Add Role</button>
+  <button class="btn btn-primary"type="submit">Add Role</button>
 </form>
 {% endif %}
 <h3>Roles:</h3>
