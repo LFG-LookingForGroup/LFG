@@ -100,16 +100,76 @@
 </form>
 
 <p>
-    {% for project in project_results %}
+    <table>
+        <tr>
+          <td>Name</td>
+          <td>Description</td>
+          <td>Roles</td>
+        </tr>
+        {% for project in project_results %}
+          <tr> 
+            <th><a href="/project/{{ project.id }}/">{{ project.name }}</a></th>
+            <th>{{ project.description }}</th>
+            <th>
+            <table>
+              <tr>
+                {% for role, is_applicable in roles %}
+                  <td>{{ role.title }}</td>
+                {% endfor %}
+              </tr>
+              <tr>
+                {% for role, is_applicable in roles %}
+                <td>
+                  {% if is_applicable %}
+                    <form action="/role/apply/{{ role.id }}/" method="post">
+                
+                      {% csrf_token %}
+                      <input type="hidden" name="redirect" value="/search/?query={{ original_query }}">
+                      <button class="button" type="submit">Apply to this role</button>
+                    </form>
+                  {% endif %}
+                </td>
+                {% endfor %}
+              </tr>
+            </table>
+            </th>
+          </tr>
+        {% empty %}
+          <th>Sorry, no project results were found.</th>
+        {% endfor %}
+      </table>
+    <!-- {% for project in project_results %}
         <a href="/project/{{project.id}}/">{{project.name}}</a>
-    {% endfor %}
-    {% for user in user_results %}
+    {% endfor %} -->
+    <!-- {% for user in user_results %}
         <a href="/accounts/profile/{{user.id}}/">{{user.username}}</a>
-    {% endfor %}
+    {% endfor %} -->
 </p>
-
+<table>
+    <tr>
+      <td>Username</td>
+      <td>First Name</td>
+      <td>Last Name</td>
+    </tr>
+    {% for user in user_results %}
+    <tr>
+      <th><a href="/accounts/profile/{{ user.id }}/">{{ user.username }}</a></th>
+      <th>{{ user.first_name }}</th>
+      <th>{{ user.last_name }}</th>
+      <th>
+        {% empty %}
+      <th>Sorry, no user results were found.</th>
+      </th>
+  
+  
+    </tr>
 <hr />
+</table>
 
+</tr>
+
+{% endfor %}
+</table>
 
 </main><!-- /.container -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
