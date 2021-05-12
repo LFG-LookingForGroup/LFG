@@ -62,8 +62,8 @@
 
   <h2>Skillset:</h2>
   <ul>
-    {% for skill, time in skillset %}
-    <li>{{ skill }}, {{ time }}</li>
+    {% for skill, time, ftime in skillset %}
+    <li>{{ skill }}, {{ ftime }}</li>
     {% endfor %}
   </ul>
   {% if is_own_profile %}
