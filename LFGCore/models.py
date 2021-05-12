@@ -117,6 +117,12 @@ class Project(models.Model):
   def get_roles(self):
     return self.role_set.filter(active=True)
 
+  def skill_set(self):
+    skillset = set()
+    for role in self.role_set.all():
+      skillset.update(role.skills.all())
+    return skillset
+
 class Member(models.Model):
   profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
   project = models.ForeignKey(Project, on_delete=models.CASCADE)

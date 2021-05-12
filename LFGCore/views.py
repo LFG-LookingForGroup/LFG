@@ -286,7 +286,8 @@ def advanced_search(request):
   if 'skill' in request.GET and request.GET['skill'] != "None":
     try:
       skill = Skill.objects.get(id=int(request.GET['skill']))
-      project_results = project_results.filter(role_set__skills=skill) # TODO fix this
+      # project_results = project_results.filter(role_set__skills=skill)
+      project_results = filter(lambda p: skill in p.skill_set(), project_results) # Wish this could be done with a Django query
       project_search_performed = True
     except ValueError:
       pass
