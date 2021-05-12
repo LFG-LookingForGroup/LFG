@@ -274,6 +274,7 @@ def index(request):
   return render(request, "LFGCore/index.html", { 
     'logged_in' : request.user.is_authenticated 
   })
+
 def advanced_search(request):    
 
   project_search_performed = False
@@ -295,6 +296,8 @@ def advanced_search(request):
 
   if not project_search_performed:
     project_results = []
+  else:
+    project_results = [(proj, proj.applicable_role_list(request.user)) for proj in project_results]
 
   user_search_performed = False
   user_results = User.objects.all()
