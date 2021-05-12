@@ -27,7 +27,7 @@ class UpdateUserForm(forms.ModelForm):
 
 class UpdateProfileForm(forms.ModelForm):
     bio = forms.CharField(max_length=1000, required=False)
-    telephone_number = forms.DecimalField(max_digits=11, decimal_places=0, required=False)
+    telephone_number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', required=False, help_text='Please provide a valid phone number.')
 
     class Meta:
         model = Profile
