@@ -31,7 +31,7 @@ def profile(request, id=None):
   return render(request, 'LFGCore/profile.html', {
     "user": user,
     "is_own_profile": user == request.user,
-    "memberships" : user.profile.member_set.filter(project__active=True),
+    "memberships" : user.profile.member_set.filter(active=True, project__active=True),
     "skillset": user.profile.get_resume(), 
     'logged_in' : request.user.is_authenticated 
   })
@@ -60,6 +60,7 @@ def project(request, id=None):
     "membership" : membership, 
     "is_owner" : is_owner,
     "project" : project, 
+    "members" : project.member_set.filter(active=True),
     "role_list" : role_list,
     "role_form" : role_form,
     'logged_in' : request.user.is_authenticated

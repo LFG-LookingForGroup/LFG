@@ -22,7 +22,7 @@
 
 <h2>Members</h2>
 <ul>
-  {% for member in project.member_set.all %}
+  {% for member in members %}
     <li>
       {{ member.profile.user.username }}: {{ member.roles.all|join:", " }}
       {% if is_owner and member.profile != user.profile and not member.is_owner %}
