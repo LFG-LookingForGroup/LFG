@@ -30,8 +30,8 @@
     {% for member in memberships %}
     <li>
       <a href="/project/{{ member.project.id }}/">{{ member.project.name }}</a>
-        {% if member.roles.all %}
-        , {{ member.roles.all.0.title }}
+        {% if member.roles.get_roles %}
+        , {{ member.roles.get_roles.0.title }}
         {% endif %}
         {% if is_own_profile %}
         <form action="/membership/quit/{{ member.id }}/" method="post">

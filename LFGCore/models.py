@@ -163,6 +163,9 @@ class Member(models.Model):
       period.deactivate()
     self.save()
 
+  def get_roles(self):
+    return self.roles.filter(active=True)
+
 class Role(models.Model):
   project = models.ForeignKey(Project, on_delete=models.CASCADE)
   skills = models.ManyToManyField('Skill')
