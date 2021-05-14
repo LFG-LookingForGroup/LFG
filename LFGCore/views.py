@@ -255,7 +255,7 @@ def search(request):
   query = request.GET.get('query', None)
 
   if query != None and query.strip() != "":
-    search_result_project = Project.objects.filter(Q(name__icontains=query) & Q(active=True))
+    search_result_project = Project.objects.filter((Q(description__icontains=query) | Q(name__icontains=query)) & Q(active=True))
     search_result_user = User.objects.filter((Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query)))
 
     search_result_project = [(proj, proj.applicable_role_list(request.user)) for proj in search_result_project]
@@ -280,7 +280,8 @@ def advanced_search(request):
   project_search_performed = False
   project_results = Project.objects.all()
   if 'project_contains' in request.GET and request.GET['project_contains'] != "":
-    project_results = project_results.filter(name__icontains = request.GET['project_contains'])
+    contains_query = request.GET['project_contains']
+    project_results = project_results.filter(Q(name__icontains = contains_query) | Q(description__icontains = contains_query))
     project_search_performed = True
   if 'project_exact' in request.GET and request.GET['project_exact'] != "":
     project_results = project_results.filter(name__iexact=request.GET['project_exact'])
