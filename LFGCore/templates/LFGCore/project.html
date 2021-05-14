@@ -28,7 +28,7 @@
       {% if is_owner and member.profile != user.profile and not member.is_owner %}
         <form action="/membership/quit/{{ member.id }}/" method="post">
           {% csrf_token %}
-          <button class="btn btn-primary" type="submit">Kick Member</button>
+          <button class="btn btn-danger" type="submit">Kick Member</button>
         </form>
       {% endif %}
     </li>
@@ -56,13 +56,13 @@
         <form action="/application/updatestatus/{{ application.id }}/" method="post">
           {% csrf_token %}
           <input type="hidden" name="newstatus" value="O">
-          <button class="btn btn-primary" type="submit">Extend Offer</button>
+          <button class="btn btn-success" type="submit">Extend Offer</button>
         </form>
         <br>
         <form action="/application/updatestatus/{{ application.id }}/" method="post">
           {% csrf_token %}
           <input type="hidden" name="newstatus" value="R">
-          <button class="btn btn-primary" type="submit">Reject Application</button>
+          <button class="btn btn-danger" type="submit">Reject Application</button>
         </form>
         {% endif %}
       </li>
@@ -76,7 +76,7 @@
 <form action="/role/create/" method='post'>
   {% csrf_token %}
   {{ role_form.as_p }}
-  <button class="btn btn-primary"type="submit">Add Role</button>
+  <button class="btn btn-primary" type="submit">Add Role</button>
 </form>
 {% endif %}
 <h3>Roles:</h3>
@@ -96,7 +96,7 @@
       <form action="/role/apply/{{ role.id }}/" method="post">
         {% csrf_token %}
         <input type="hidden" name="redirect" value="/project/{{ project.id }}/">
-        <button class="button" type="submit">Apply to this role</button>
+        <button class="btn btn-info btn-block" type="submit">Apply to this role</button>
       </form>
       {% endif %}
     </td>
@@ -105,7 +105,7 @@
       <form action="/role/delete/" , method='post'>
         {% csrf_token %}
         <input type="hidden" name="id" value="{{ role.id }}">
-        <button class="button" type="submit">Delete Role</button>
+        <button class="btn btn-danger btn-block" type="submit">Delete Role</button>
       </form>
       {% endif %}
     </td>
