@@ -222,7 +222,13 @@ class Application(models.Model):
   ))
 
   def graduate_to_membership(self):
-    membership = self.role.project.add_member(self.applicant.user, [self.role])
+    membership = self.role.project.member_set.filter(profile=self.applicant)
+    if membership.exists():
+      membership = membership.first()
+      membership.active = True
+      membership.roles.add(self.role)
+    else:
+      membership = self.role.project.add_member(self.applicant.user, [self.role])
     self.delete()
     return membership
 
