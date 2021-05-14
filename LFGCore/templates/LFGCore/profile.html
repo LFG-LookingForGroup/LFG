@@ -36,7 +36,7 @@
         {% if is_own_profile %}
         <form action="/membership/quit/{{ member.id }}/" method="post">
           {% csrf_token %}
-          <button class="btn btn-primary" type="submit">Leave Project</button>
+          <button class="btn btn-danger" type="submit">Leave Project</button>
         </form>
         {% endif %}
       </li>
@@ -51,13 +51,13 @@
       {% if application.status == 'O' %}
       <form action="/project/acceptoffer/{{ application.id }}/" method="post">
         {% csrf_token %}
-        <button class="btn btn-primary" type="submit">Accept Offer</button>
+        <button class="btn btn-success" type="submit">Accept Offer</button>
       </form>
       <br>
       <form action="/application/updatestatus/{{ application.id }}/" method="post">
         {% csrf_token %}
         <input type="hidden" name="newstatus" value="D">
-        <button class="btn btn-primary" type="submit">Decline Offer</button>
+        <button class="btn btn-danger" type="submit">Decline Offer</button>
       </form>
       {% endif %}
     </li>
