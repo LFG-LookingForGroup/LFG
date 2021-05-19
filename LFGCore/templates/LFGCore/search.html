@@ -43,7 +43,9 @@
             </div>
             <div>
               {% for skill in role.skills.all %}
-                {{ skill }}
+                <div class="skill-tag">
+                  {{ skill }}
+                </div>
               {% endfor %}
             </div>
           </td>
