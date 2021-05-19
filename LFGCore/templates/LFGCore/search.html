@@ -25,7 +25,8 @@
       <table>
         <tr>
           {% for role, is_applicable in roles %}
-            <td>{{ role.title }}</td>
+            <td>&nbsp;&nbsp;&nbsp;{{ role.title }}</td>
+            <td><p style="color:rgb(9, 17, 129)">&nbsp;&nbsp;&nbsp;Skills</p></td>
           {% endfor %}
         </tr>
         <tr>
@@ -40,13 +41,14 @@
                   <button class="tn btn-secondary btn-block" type="submit">Apply</button>
                 </form>
               {% endif %}
-            </div>
-            <div>
-              {% for skill in role.skills.all %}
-                {{ skill }}
-              {% endfor %}
-            </div>
+            </div>         
+            
           </td>
+          <td><div>
+            {% for skill in role.skills.all %}
+            &nbsp;&nbsp;&nbsp;{{ skill }}
+            {% endfor %}
+          </div></td>
           {% endfor %}
         </tr>
       </table>
