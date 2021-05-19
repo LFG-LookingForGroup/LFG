@@ -31,14 +31,21 @@
         <tr>
           {% for role, is_applicable in roles %}
           <td>
-            {% if is_applicable %}
-              <form action="/role/apply/{{ role.id }}/" method="post">
-          
-                {% csrf_token %}
-                <input type="hidden" name="redirect" value="/search/?query={{ original_query }}">
-                <button class="tn btn-secondary btn-block" type="submit">Apply to this role</button>
-              </form>
-            {% endif %}
+            <div>
+              {% if is_applicable %}
+                <form action="/role/apply/{{ role.id }}/" method="post">
+            
+                  {% csrf_token %}
+                  <input type="hidden" name="redirect" value="/search/?query={{ original_query }}">
+                  <button class="tn btn-secondary btn-block" type="submit">Apply</button>
+                </form>
+              {% endif %}
+            </div>
+            <div>
+              {% for skill in role.skills.all %}
+                {{ skill }}
+              {% endfor %}
+            </div>
           </td>
           {% endfor %}
         </tr>
