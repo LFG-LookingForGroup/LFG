@@ -114,21 +114,27 @@
             <table>
               <tr>
                 {% for role, is_applicable in roles %}
-                  <td>{{ role.title }}</td>
+                  <td style="border-bottom: 1px solid #000;">&nbsp;&nbsp;&nbsp;{{ role.title }}</td>
+                  <td style="border-bottom: 1px solid #000;"><p style="color:rgb(9, 17, 129)">&nbsp;&nbsp;&nbsp;Skills&nbsp;&nbsp;&nbsp;</p></td>
                 {% endfor %}
               </tr>
               <tr>
                 {% for role, is_applicable in roles %}
-                <td>
+                <td style="border-bottom: 1px solid #000;border-right: 1px solid #000;border-left: 1px solid #000">
                   {% if is_applicable %}
                     <form action="/role/apply/{{ role.id }}/" method="post">
                 
                       {% csrf_token %}
                       <input type="hidden" name="redirect" value="/search/?query={{ original_query }}">
-                      <button class="btn btn-secondary btn-block" type="submit">Apply to this role</button>
+                      <button class="btn btn-secondary btn-block" type="submit">Apply</button>
                     </form>
                   {% endif %}
                 </td>
+                <td style="border-bottom: 1px solid #000;border-right: 1px solid #000;"><div>
+                  {% for skill in role.skills.all %}
+                  <div style="font-size:12px">&nbsp;&nbsp;&nbsp;{{ skill }}&nbsp;&nbsp;&nbsp;</div>
+                  {% endfor %}
+                </div></td>
                 {% endfor %}
               </tr>
             </table>
