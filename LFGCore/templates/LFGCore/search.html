@@ -25,13 +25,13 @@
       <table>
         <tr>
           {% for role, is_applicable in roles %}
-            <td>&nbsp;&nbsp;&nbsp;{{ role.title }}</td>
-            <td><p style="color:rgb(9, 17, 129)">&nbsp;&nbsp;&nbsp;Skills</p></td>
+            <td style="border-bottom: 1px solid #000;">&nbsp;&nbsp;&nbsp;{{ role.title }}</td>
+            <td style="border-bottom: 1px solid #000;"><p style="color:rgb(9, 17, 129)">&nbsp;&nbsp;&nbsp;Skills</p></td>
           {% endfor %}
         </tr>
         <tr>
           {% for role, is_applicable in roles %}
-          <td>
+          <td style="border-bottom: 1px solid #000;border-right: 1px solid #000;border-left: 1px solid #000">
             <div>
               {% if is_applicable %}
                 <form action="/role/apply/{{ role.id }}/" method="post">
@@ -44,7 +44,7 @@
             </div>         
             
           </td>
-          <td><div>
+          <td style="border-bottom: 1px solid #000;border-right: 1px solid #000;"><div>
             {% for skill in role.skills.all %}
             &nbsp;&nbsp;&nbsp;{{ skill }}
             {% endfor %}
@@ -57,6 +57,7 @@
   {% empty %}
     <th>Sorry, no project results were found.</th>
   {% endfor %}
+  
 </table>
 <table>
   <tr>
