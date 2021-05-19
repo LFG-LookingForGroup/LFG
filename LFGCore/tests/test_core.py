@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from LFGCore.models import *
 from django.contrib.auth.models import User
 from datetime import datetime
+from bs4 import BeautifulSoup
 
 class SignUp(TestCase):
     def setUp(self):
@@ -114,7 +115,23 @@ class ProfileCreation(TestCase):
     def test_profile_creation(self):
         testuser = User.objects.get(username = 'test_user')
         self.assertNotEquals(testuser.profile, None)
-        
+
+class Search(TestCase):
+    def setUp(self):
+        self.creator = User.objects.create_user(username = 'test_creator', password = "abc123", email = "testcreator@email.com", first_name = 'test_creator', last_name = 'test_creator_lname',)
+        self.project = Project.objects.create_project(self.creator, name = 'test_project', description = 'this is a testing project')
+        self.skill1 = Skill.objects.create(name = "test_skill_1", description = "this is a test skill")
+        self.skill2 = Skill.objects.create(name = "test_skill_2", description = "this is another test skill")
+        self.client = Client()
+        self.client.login(username = self.creator.username, password = "abc123")
+
+    def test_basic_search(self):
+        resp = self.client.get("/search/", {
+            "query": "test"
+        }, follow = True)
+        content = BeautifulSoup(resp, "html.parser")
+        self.assertNotEqual(content.select(f"a[href='/project/{self.project.id}/']"), [])
+
 class AnonymousAccess(TestCase):
     def setUp(self):
         User.objects.create(username = 'test_user', password = "abc123", email = "testuser@email.com", first_name = 'test_user_fname', last_name = 'test_user_lname',)
