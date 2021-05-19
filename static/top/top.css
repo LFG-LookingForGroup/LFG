@@ -138,3 +138,15 @@ footer {
   .form {
     margin-left: 5%;
   }
+
+  .skill-tag {
+    font-size: 11px;
+    margin: 3px;
+    padding: 2px;
+    border-radius: 16px;
+    background-image: linear-gradient(to right, rgb(205, 244, 246), rgb(212, 232, 245));
+    border: solid 2px rgb(131, 143, 143);
+    padding: 4px;
+    text-align: center;
+  }
+  
